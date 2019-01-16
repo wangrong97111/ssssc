@@ -1,0 +1,141 @@
+<template>
+    <!--额外费用查看-->
+    <view class="examineOrderDetail">
+        <view class="bz flex-between bluebac white f15"
+              style="width:{{px2rpxWidth*748}}px;padding-left:{{px2rpxWidth*20}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+            额外费用查看
+        </view>
+        <view wx:if="{{remarkConN}}" class="f16 flex-center" style="padding-top:  {{px2rpxHeight*100}}px;">
+            暂无任何费用明细
+        </view>
+        <view wx:if="{{remarkConY}}">
+            <block wx:for="{{remarkCon}}" wx:key="{{index}}">
+                <view class="searchdetail whitebac f13"
+                      style="width:{{px2rpxWidth*748}}px;padding: {{px2rpxHeight*20}}px;">
+                    <!--<view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">{{item.name}}</view>
+                        <view class="noline flex-end">{{item.money}}</view>
+                    </view>-->
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">额外费用</view>
+                        <view class="noline flex-end">{{item.money}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">创建时间</view>
+                        <view class="noline flex-end">{{item.createTime}}</view>
+                    </view>
+                    <view class=" flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">费用说明</view>
+                        <view class="noline flex-end">{{item.cost_type}}</view>
+                    </view>
+                    <view class=" flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">状态</view>
+                        <view class="noline flex-end" wx:if="{{item.flag1==0}}">通过</view>
+                        <view class="noline flex-end" wx:if="{{item.flag1==1}}">拒绝</view>
+                    </view>
+                    <view class=" flex-between"
+                          style="height:{{px2rpxHeight*82}}px;" wx:if="{{item.flag1==1}}">
+                        <view class="flex-start">拒绝原因</view>
+                        <view class="noline flex-end">{{item.comment}}</view>
+                    </view>
+                    <view class="bluebac" style="width: 100%;height: {{px2rpxHeight*4}}px;"></view>
+                </view>
+            </block>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {PX_TO_RPX, USER_INFO} from '@/utils/constant';
+    import api from '@/utils/api';
+    //import ClassifyStore from '@/components/classifystore';
+    let page = 1;
+    let pageSize = 20;
+    export default class OutPay extends wepy.page {
+        config = {
+            navigationBarTitleText: '额外费用查看',
+        };
+        components = {
+            //classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            remarkCon: [],
+            remarkConY: false,
+            remarkConN: false,
+            bangding_admin:'',
+        };
+
+        computed = {};
+
+        methods = {};
+
+        events = {};
+
+        //额外费用
+        async outMoney(options) {
+            // console.log(options.orderNum)
+            let rlt = await api.reasonList({
+                query: {
+                    num: options.orderNum,      //订单编号
+                    page: page,
+                    pageSize: pageSize,
+                    adminId:this.bangding_admin,
+                }
+            });
+          this.remarkCon = rlt.data.data.PageInfo.list;
+            if (rlt.data.data.PageInfo.total<1) {
+                this.remarkConN = true;
+                this.remarkConY = !this.remarkConN ;
+            }else{
+              this.remarkConY = true;
+              this.remarkConN = !this.remarkConY ;
+            }
+            this.$apply();
+        };
+
+        async onLoad(options) {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            //取缓存
+            let userInfo = wepy.getStorageSync(USER_INFO);
+            this.bangding_admin=userInfo.bangding_admin;
+
+            this.outMoney(options);
+            this.$apply();
+            console.log(px2rpx);
+        }
+    }
+</script>
+<style lang="less">
+    page {
+        background: rgba(241, 241, 241, 1);
+    }
+
+    .examineOrderDetail {
+        .bz {
+            box-sizing: border-box;
+            padding: 30 rpx;
+        }
+        .searchdetail {
+            box-sizing: border-box;
+            border-radius: 5px;
+            .noline {
+                width: 60%;
+            }
+            .line {
+                border-bottom: 1px solid #FFF2F2F2;
+            }
+        }
+    }
+
+</style>

@@ -1,0 +1,231 @@
+<style lang="less">
+    page{
+        color: #333333;
+        font-family:PingFang-SC-Regular;
+    }
+    .flex-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .flex-column-start {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .flex-wrap{
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .flex-center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .flex-between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .flex-start {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+    }
+
+    .flex-end {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+    }
+
+    .flex-around {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+    }
+
+    image {
+
+    }
+    .f11{
+        font-size: 22rpx;
+    }
+    .f12{
+        font-size: 24rpx;
+    }
+    .f13{
+        font-size: 26rpx;
+    }
+    .f14{
+        font-size: 28rpx;
+    }
+    .f15{
+        font-size: 30rpx;
+    }
+    .f16{
+        font-size: 32rpx;
+    }
+    .f18{
+        font-size: 36rpx;
+    }
+    .f19{
+        font-size: 38rpx;
+    }
+
+    .h1{
+        width: 100%;
+        height: 2rpx;
+        background: #f0f0f0;
+    }
+    .h8{
+        width: 100%;
+        height: 16rpx;
+        background: #f0f0f0;
+    }
+
+
+    .clearfix {
+        display: block;
+        zoom: 1;
+    }
+
+    .clearfix::after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+        font-size: 0;
+    }
+
+    .blue{
+        color: #01419B;
+    }
+    .red{
+        color: #FF3939;
+    }
+    .gree{
+        color: #44916d;
+    }
+    .white{
+        color: #ffffff;
+    }
+    .bluebac{
+        background-color: #01419B;
+    }
+    .redbac{
+        background-color: #C02B2B;
+    }
+    .greebac{
+        background-color: #44916d;
+    }
+    .whitebac{
+        background-color: #ffffff;
+    }
+    .box{
+        box-sizing: border-box;
+    }
+
+
+</style>
+
+<script>
+    import wepy from 'wepy';
+    import 'wepy-async-function';
+    import {USER_INFO,PX_TO_RPX} from '@/utils/constant';
+    import api from '@/utils/api';
+
+    export default class extends wepy.app {
+        config = {
+            pages: [
+
+                'pages/authorize',  //授权
+                'pages/login',      //登录
+                'pages/index',      //首页
+
+                //订单
+                'pages/order/eachOrder',      //订单审核分开
+                'pages/order/examineOrder',      //订单审核
+                'pages/order/examineOrderDetail',      //订单审核————订单详情
+                'pages/order/examineOrderDetail2',      //订单审核————订单详情
+                'pages/order/examineOrderRemark',      //订单审核————备注
+                'pages/order/searchOrder',      //订单查询
+                'pages/order/searchOrderDetail',      //订单查询详情
+                'pages/order/outPay',       //额外费用查看
+
+                'pages/order/examineOrderOnline',      //线上订单审核
+                'pages/order/eachOrderSe',      //订单搜索分开
+
+
+                //报销
+                'pages/account/examineAccount',      //报销审核
+                'pages/account/examineAccountExpense',      //报销审核（报销单）
+                'pages/account/searchAccount',      //报销查询
+                'pages/account/searchAccountDetail',      //报销查询详情
+
+                //账单审核
+                'pages/bill/examineBill',      //账单审核
+                'pages/bill/freightExamine',      //账单审核（运费）
+                'pages/bill/freightExamineRemark',      //账单审核（运费）————备注
+                'pages/bill/freightExamineDetail',      //账单审核（运费）————账单详情
+                'pages/bill/carriageExamine',      //账单审核（承运费）
+
+                //账单查询
+                'pages/bill/searchBill',      //账单查询
+                'pages/bill/freightSearch',      //账单查询（运费）
+                'pages/bill/freightSearchDetail',      //账单查询详情（运费）
+                'pages/bill/carriageSearch',      //账单查询（承运费）
+                'pages/bill/carriageSearchDetail',      //账单查询详情（承运费）
+
+            ],
+            window: {
+                navigationBarTitleText: 'SSC超级供应链联盟',
+                navigationBarBackgroundColor: '#01419B',
+                backgroundTextStyle: 'light',
+                navigationBarTextStyle: 'white'
+            }
+        };
+
+        globalData = {
+            userInfo: null
+        };
+
+        constructor() {
+            super();
+            this.use('promisify');
+            this.use('requestfix');
+        }
+
+        async onLaunch() {
+            // 登录
+            /*let res = await wepy.login();
+            if(res.code){
+                let rlt = await api.userLogin({
+                    query:{
+                        code:res.code
+                    }
+                });
+                wepy.setStorageSync(USER_INFO, rlt.data.data);
+            }*/
+            // 获取页面信息
+            let systemInfo = wepy.getSystemInfoSync();
+            console.log(systemInfo)
+            wepy.setStorageSync(PX_TO_RPX, {
+                px2rpxWidth: systemInfo.windowWidth / 750,
+                px2rpxHeight: systemInfo.screenHeight / 1334
+            });
+        }
+    }
+</script>

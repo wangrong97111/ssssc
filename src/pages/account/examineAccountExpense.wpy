@@ -1,0 +1,156 @@
+<template>
+    <!--报销审核（报销单）-->
+    <view class="examineOrderDetail">
+        <view class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px;">
+            <view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="flex-start">所属部门</view>
+                <view class="noline flex-end" wx:if="{{admin_job=='0'}}">
+                    业务员
+                </view>
+                <view class="noline flex-end" wx:if="{{admin_job=='1'}}">
+                    财务人员
+                </view>
+                <view class="noline flex-end" wx:if="{{admin_job=='2'}}">
+                    客服人员
+                </view>
+                <view class="noline flex-end" wx:if="{{admin_job=='3'}}">
+                    操作人员
+                </view>
+            </view>
+            <view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="flex-start">报销人</view>
+                <view class="noline flex-end">{{admin_name}}</view>
+            </view>
+            <view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="flex-start">报销总金额/元</view>
+                <view class="noline flex-end">200</view>
+            </view>
+        </view>
+        <view class="bz flex-between bluebac white f15"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+            列账科目
+        </view>
+        <view class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px;">
+            <view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="flex-start">差旅费/元</view>
+                <view class="noline flex-end">1000</view>
+            </view>
+            <view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="flex-start">办公费/元</view>
+                <view class="noline flex-end">200</view>
+            </view>
+        </view>
+        <view wx:if="{{viewAll}}">
+            <i-load-more tip="已经到底了" loading="{{false}}"/>
+        </view>
+        <view style="width: 100%;height:{{px2rpxHeight*50}}px;"></view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {PX_TO_RPX} from '@/utils/constant';
+    import api from '@/utils/api';
+    //import ClassifyStore from '@/components/classifystore';
+    let page=1;
+    let pageSize=20;
+    let isLastPage = false;
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '报销单',
+            "usingComponents": {
+                "i-load-more": "../../iview/load-more/index"
+            }
+        };
+        components = {
+            //classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            admin_name:'',
+            admin_job:'',
+            id:'',
+            orderObj:[],
+            //数据加载完毕
+            viewAll:false,
+        };
+
+        computed = {};
+
+        methods = {};
+
+        events = {};
+        /**
+         * 页面上拉触底事件的处理函数
+         */
+        onReachBottom() {
+            if (isLastPage) {
+                this.viewAll = true;
+                wepy.showToast({
+                    title: '没有更多数据了',
+                    icon: 'none',
+                    mask: true,
+                    duration: 1000
+                })
+            } else {
+                wx.showLoading({
+                    title: '努力加载中',
+                });
+                page++;
+                this.getList();
+            }
+        };
+        async getList(){
+            let rlt = await api.baoXiao({
+                query: {
+                    id: this.id,
+                    page:page,
+                    pageSize:pageSize,
+                }
+            });
+            console.log(rlt)
+            isLastPage = rlt.data.data.PageInfo.isLastPage
+            this.orderObj = this.orderObj.concat(rlt.data.data.PageInfo.list);
+
+        };
+        async onLoad(options) {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            this.admin_name=options.admin_name;
+            this.admin_job=options.admin_job;
+            this.id=options.id;
+            //获取报销单详情
+            this.getList(options.id);
+            this.$apply();
+            console.log(px2rpx);
+        }
+    }
+</script>
+<style lang="less">
+    page{
+        background:rgba(241,241,241,1);
+    }
+    .examineOrderDetail{
+        .bz{
+            box-sizing: border-box;
+            padding: 30rpx;
+        }
+        .searchdetail{
+            box-sizing: border-box;
+            border-radius: 5px;
+            .noline {
+                width: 60%;
+            }
+            .line{
+                border-bottom: 1px solid #FFF2F2F2;
+            }
+        }
+    }
+</style>

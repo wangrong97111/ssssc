@@ -1,0 +1,131 @@
+<template>
+    <!--运费查询-->
+    <view class="search whitebac" style="width:{{px2rpxWidth*750}}px;">
+        <view class=" flex-center" style="width:{{px2rpxWidth*750}}px;">
+            <view class="searchtop" style="width:{{px2rpxWidth*700}}px;height:{{px2rpxHeight*200}}px;">
+                <view class="flex-between f13" style="margin-top: {{px2rpxHeight*30}}px;">
+                    <view class="searchtit">创建日期</view>
+                    <view class="searchcon">
+                        <picker mode="date" value="{{date}}" start="1990-09-01" end="2028-09-01"bindchange="bindDateChange">
+                            <input type="text" value="{{date}}"  placeholder="请选择日期"></input>
+                        </picker>
+                        <image src="../../static/image/list.png" class="botlist" style="width: {{px2rpxHeight*40}}rpx;height:{{px2rpxHeight*30}}rpx;top:  {{px2rpxHeight*40}}rpx;right: {{px2rpxWidth*40}}rpx;"></image>
+                    </view>
+                </view>
+                <view class="flex-between f13" style="margin-top: {{px2rpxHeight*30}}px;">
+                    <view class="searchTit">收款状态</view>
+                    <view class="searchcon">
+                        <picker range="{{supplier}}"  bindchange="Stypes">
+                            <input type="text" value="{{Stypes}}"  placeholder="请选择"></input>
+                        </picker>
+                        <image src="../../static/image/list.png" class="botlist" style="width: {{px2rpxHeight*40}}rpx;height:{{px2rpxHeight*30}}rpx;top:{{px2rpxHeight*40}}rpx;right: {{px2rpxWidth*40}}rpx;"></image>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="flex-center" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*170}}px;">
+            <button @tap="search" class="f13 bluebac white flex-center" style="width:{{px2rpxWidth*557}}px;height:{{px2rpxHeight*80}}px;">
+                搜索
+            </button>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {PX_TO_RPX} from '@/utils/constant';
+    
+    //import ClassifyStore from '@/components/classifystore';
+
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '应收账单查询',
+        };
+        components = {
+            //classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            date: '',      //创建日期
+            supplier:['全部','待支付','已支付'],    //收款状态
+            Stypes:'',
+          StypesVa:'',
+        };
+
+        computed = {};
+
+        methods = {
+            //创建日期
+            bindDateChange: function(e) {
+                console.log(e.detail.value)
+                this.date=e.detail.value;
+                this.$apply();
+            },
+            // 收款状态
+            Stypes(e){
+                console.log(e.detail.value)
+                let index=e.detail.value;
+                if(index==0){
+                  this.StypesVa='';
+                }
+                  if(index==1){
+                    this.StypesVa='0';
+                  }
+                  if(index==2){
+                    this.StypesVa='1';
+                  }
+
+              this.Stypes=this.supplier[index];
+                this.$apply();
+            },
+            //搜索
+            async search(){
+                console.log(this.date)
+                //跳转传值——传搜索内容
+                wx.navigateTo({                             //创建日期————收款状态
+                    url: '/pages/bill/freightSearchDetail?startDay='+this.date+"&Stypes="+this.StypesVa
+                })
+            },
+        };
+
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+
+            this.$apply();
+            console.log(px2rpx);
+        }
+    }
+</script>
+<style lang="less">
+    page{
+        background:rgba(241,241,241,1);
+    }
+    .search{
+        .searchtop{
+            color:rgba(51,51,51,1);
+            border-bottom: 2rpx solid #FFF1F1F1;
+            .searchtit{
+                width: 30%;
+            }
+            .searchcon{
+                box-sizing: border-box;
+                padding-left: 30rpx;
+                width: 70%;
+                border-radius: 5px;
+                border:1px solid rgba(153,153,153,1);
+                position: relative;
+                .botlist{
+                    position: absolute;
+                }
+            }
+        }
+
+    }
+</style>

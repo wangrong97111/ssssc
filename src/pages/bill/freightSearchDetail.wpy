@@ -1,0 +1,310 @@
+<template>
+    <view class="searchorderdetail">
+        <view class="flex-center">
+            <view class="red top flex-end f14"
+                  style="width:{{px2rpxWidth*690}}px;height:{{px2rpxHeight*70}}px;">
+                总条数：{{len}}条
+            </view>
+        </view>
+        <view wx:if="{{NoData}}" class="f18 flex-center" style="margin-top:{{px2rpxHeight*100}}px; ">
+            未搜索到结果
+        </view>
+        <block wx:for="{{orderObj}}" wx:key="{{index}}">
+            <view class="searchdetail whitebac f13"
+                  style="width:{{px2rpxWidth*690}}px;margin-top: {{px2rpxHeight*10}}px; padding: {{px2rpxHeight*20}}px;;">
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">账单号</view>
+                    <view class="noline flex-end f14">{{item.bill_num}}</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">创建日期</view>
+                    <view class="noline flex-end f14">{{item.createTime}}</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">用户名</view>
+                    <view class="noline flex-end f14">{{item.user_name}}</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">账期</view>
+                    <view class="noline flex-end f14" wx:if="{{item.payment_day=='0'}}">月结</view>
+                    <view class="noline flex-end f14" wx:if="{{item.payment_day=='1'}}">单结</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">应收费账单详情</view>
+                    <view class="noline flex-end f14 blue" data-num="{{item.bill_num}}" @tap="seeBillDetail">查看</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">应收款(元)</view>
+                    <view class="noline flex-end f14 ">{{item.moneyAll}}元</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">付款状态</view>
+                    <view class="noline flex-end f14 blue" wx:if="{{item.flag5=='0'}}">待支付</view>
+                    <view class="noline flex-end f14 blue" wx:if="{{item.flag5=='1'}}">已支付</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">发票</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag3=='0'}}">待开票</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag3=='1'}}">已开票</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag3=='2'}}">已确认收票</view>
+                </view>
+            </view>
+        </block>
+        <view wx:if="{{viewAll}}">
+            <i-load-more tip="已经到底了" loading="{{false}}"/>
+        </view>
+        <view style="width: 100%;height:{{px2rpxHeight*50}}px;"></view>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import { PX_TO_RPX, USER_INFO } from '@/utils/constant';
+  import api from '@/utils/api';
+  //import ClassifyStore from '@/components/classifystore';
+  //分页
+  let page = 1;
+  let pageSize = 20;
+  let isLastPage = false;
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: '应收账单查询详情',
+      'usingComponents': {
+        'i-load-more': '../../iview/load-more/index'
+      }
+    };
+    components = {
+      //classifystore: ClassifyStore
+    };
+
+    data = {
+      px2rpxWidth: '',
+      px2rpxHeight: '',
+      //查询订单列表
+      orderObj: [],
+      //
+      time: '',      //创建时间
+      flag2: '',
+      //总条数
+      len: '',
+      //数据加载完毕
+      viewAll: false,
+      //无数据
+      NoData: false,
+      userInfo: []
+
+    };
+
+    computed = {};
+
+    methods = {
+      //点击查看账单详情
+      seeBillDetail(e) {
+        wx.navigateTo({
+          url: '/pages/bill/freightExamineDetail?billNum=' + e.currentTarget.dataset.num
+        });
+      }
+    };
+
+    // ','截取成数组
+    judge(data) {
+      // console.log(data);
+      let a = [];
+      let Str = data;
+      a = Str.split(',');
+      if (a.length > 1) {
+        // return true;
+        return data.split(',');
+      } else {
+        return false;
+      }
+    };
+
+    //运费查询
+    async orderList() {
+      let that = this;
+      let rlt = await api.selectBillListAll({
+        query: {
+          time: this.time,      //创建时间
+          flag5: this.flag2,      //付款状态：0未支付 1已支付
+          page: page,
+          pageSize: pageSize
+        }
+      });
+      this.len = rlt.data.data.PageInfo.total;
+      isLastPage = rlt.data.data.PageInfo.isLastPage;
+      this.orderObj = this.orderObj.concat(rlt.data.data.PageInfo.list);
+      //forEach进去isCheck
+      this.orderObj.forEach((item) => {
+        item.moneyAll = 0;
+      });
+      let lang = this.orderObj.length;
+      for (let i = 0; i < lang; i++) {
+        let a = this.judge(this.orderObj[i].money);
+        // console.log(a)
+        let leng = a.length;
+        for (let j = 0; j < leng; j++) {
+          if (a[j] == '') {
+            a[j] = 0;
+          } else {
+            a[j] = Number(a[j]);
+          }
+          this.orderObj[i].moneyAll += a[j];
+        }
+      }
+
+      console.log(this.orderObj);
+      //无数据时
+      if (this.len == 0) {
+        this.NoData = true;
+      }
+      this.$apply();
+    };
+
+    events = {};
+
+    /**
+     * 页面相关事件处理函数--监听用户下拉动作
+     */
+    onPullDownRefresh() {
+      console.log('page下拉动作');
+      wx.showLoading({
+        title: '努力加载中'
+      });
+      this.orderList();
+    };
+
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom() {
+      if (isLastPage) {
+        this.viewAll = true;
+        wepy.showToast({
+          title: '没有更多数据了',
+          icon: 'none',
+          mask: true,
+          duration: 1000
+        });
+      } else {
+        wx.showLoading({
+          title: '努力加载中'
+        });
+        page++;
+        this.orderList();
+      }
+    };
+
+    /**
+     * 页面下拉请求数据更新
+     */
+
+    /* onPullDownRefresh() {
+         wx.showLoading({
+             title: '努力加载中',
+         });
+         console.log('下拉刷新列表')
+         // this.exameList();
+         /!* setTimeout(function () {
+              // 不加这个方法真机下拉会一直处于刷新状态，无法复位
+              wepy.stopPullDownRefresh()
+          }, 5000)*!/
+     };*/
+
+    async onLoad(options) {
+      let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+      this.px2rpxWidth = px2rpx.px2rpxWidth;
+      this.px2rpxHeight = px2rpx.px2rpxHeight;
+      this.userInfo = wepy.getStorageSync(USER_INFO);
+      //订单查询接受内容obj
+      // this.orderObj= JSON.parse(options.orderObj);//解析得到对象
+      //接查询内容
+      console.log(options);
+      this.time = options.startDay;
+      this.flag2 = options.Stypes;          //付款状态
+      //查询列表方法
+      // this.methods.orderList(options.startDay,options.endDay,options.shipName)
+      this.orderList();
+      this.$apply();
+      console.log(px2rpx);
+    }
+  }
+</script>
+<style lang="less">
+    page {
+        background: rgba(241, 241, 241, 1);
+    }
+
+    .searchorderdetail {
+        .searchdetail {
+            margin: 0 auto;
+            box-sizing: border-box;
+            border-radius: 5px;
+
+        }
+        .lineleft {
+            width: 35%;
+        }
+        .noline {
+            width: 65%;
+        }
+        /*遮罩层*/
+        .mask {
+            position: fixed;
+            top: 0 rpx;
+            background-color: #000;
+            opacity: 0.55;
+            z-index: 2001;
+
+        }
+        .bord {
+            position: fixed;
+            top: 0 rpx;
+            background-color: #ffffff;
+            z-index: 2002;
+            border-radius: 5px;
+            .bord-top {
+                /*font-weight: bold;*/
+                text-align: center;
+            }
+            .textarea {
+                box-sizing: border-box;
+                padding: 10 rpx;
+                border: 1px solid rgba(153, 153, 153, 1);
+            }
+            .refusebtn2 {
+                border: 1px solid rgba(1, 65, 155, 1);
+
+            }
+        }
+        /*加载*/
+        .loading {
+            padding: 10 rpx;
+            text-align: center;
+        }
+
+        .loading:before {
+            display: inline-block;
+            margin-right: 5 rpx;
+            vertical-align: middle;
+            content: '';
+            width: 40 rpx;
+            height: 40 rpx;
+            background-color: #ddd;
+            animation: rotate 1s linear infinite;
+        }
+
+        .loading.complete:before {
+            display: none;
+        }
+    }
+
+</style>

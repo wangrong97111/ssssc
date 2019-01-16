@@ -1,0 +1,157 @@
+<template>
+    <view class="search whitebac" style="width:{{px2rpxWidth*750}}px;">
+        <view class=" flex-center" style="width:{{px2rpxWidth*750}}px;">
+            <view class="searchtop" style="width:{{px2rpxWidth*700}}px;padding-bottom:{{px2rpxHeight*30}}px; ">
+                <view class="flex-between f13" style="margin-top: {{px2rpxHeight*30}}px;">
+                    <view class="searchtit">航名</view>
+                    <view class="searchcon">
+                            <input type="text" @input="shipName" placeholder="请输入航名/航次"/>
+                    </view>
+                </view>
+                <view class="flex-between f13" style="margin-top: {{px2rpxHeight*30}}px;">
+                    <view class="searchtit">航次</view>
+                    <view class="searchcon">
+                        <input type="text" @input="shipName2" placeholder="请输入航名/航次"/>
+                    </view>
+                </view>
+                <view class="flex-between f13" style="margin-top: {{px2rpxHeight*30}}px;">
+                    <view class="searchTit">订舱日期</view>
+                    <view class="searchcon">
+                        <picker mode="date" value="{{startDay}}"   start="1990-09-01" end="2028-09-01" bindchange="bindDateChange">
+                            <input type="text" value="{{startDay}}" placeholder="请选择日期" />
+                        </picker>
+                        <image src="../../static/image/list.png" class="botlist" style="width: {{px2rpxHeight*40}}rpx;height:{{px2rpxHeight*30}}rpx;top:{{px2rpxHeight*40}}rpx;right: {{px2rpxWidth*40}}rpx;"></image>
+                    </view>
+                </view>
+                <!--<view class="flex-between f13" style="margin-top: {{px2rpxHeight*30}}px;">
+                    <view class="searchTit">订舱结束日期</view>
+                    <view class="searchcon">
+                        <picker mode="date" value="{{endDay}}"   start="1990-09-01" end="2028-09-01" bindchange="bindDateChange2">
+                            <input type="text" value="{{endDay}}" placeholder="请选择日期" />
+                        </picker>
+                        <image src="../../static/image/list.png" class="botlist" style="width: {{px2rpxHeight*40}}rpx;height:{{px2rpxHeight*30}}rpx;top:{{px2rpxHeight*40}}rpx;right: {{px2rpxWidth*40}}rpx;"></image>
+                    </view>
+                </view>-->
+            </view>
+        </view>
+        <view class="flex-center" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*170}}px;">
+            <button @tap="search" class="f13 bluebac white flex-center" style="width:{{px2rpxWidth*557}}px;height:{{px2rpxHeight*80}}px;">
+                搜索
+            </button>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import api from '@/utils/api';
+    import {PX_TO_RPX} from '@/utils/constant';
+    //import ClassifyStore from '@/components/classifystore';
+
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '订单查询',
+        };
+        components = {
+            //classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            startDay: '',//订舱开始日期
+            endDay: '',//订舱结束日期
+            shipName:'',    //航名
+            shipName2:'',   ///航次
+        };
+
+        computed = {};
+
+        methods = {
+            //订舱日期开始日期
+            bindDateChange: function(e) {
+                this.startDay=e.detail.value;
+                this.$apply();
+            },
+            //订舱日期结束日期
+            bindDateChange2: function(e) {
+                this.endDay=e.detail.value;
+                this.$apply();
+            },
+            //航名
+            shipName(e){
+                this.shipName = e.detail.value;
+                this.$apply();
+            },
+            ///航次
+            shipName2(e){
+                this.shipName2 = e.detail.value;
+                this.$apply();
+            },
+            //搜索
+            async search(){
+                /*console.log(this.startDay)
+                console.log(this.endDay)
+                console.log(this.shipName)*/
+                //跳转传值——传搜索内容
+                wx.navigateTo({             //航名        //时间        //航次
+                    // url: '/pages/order/searchOrderDetail?shipName='+this.shipName+"&startDay="+this.startDay+"&endDay="+this.endDay
+                    url: '/pages/order/searchOrderDetail?shipName='+this.shipName+"&startDay="+this.startDay+"&endDay="+this.shipName2
+                })
+
+               /*
+                //跳转之前查询，传查询之后的值
+                let that = this;
+                let rlt = await api.selectOrder({
+                    query: {
+                        bookingTime:that.date,      //订舱时间
+                        shipName:that.shipName,             //船名/航次
+                        page:1,
+                        pageSize:20,
+                    }
+                });
+                //    跳转搜索详情页
+                 wx.navigateTo({
+                       url: '/pages/order/searchOrderDetail?orderObj='+JSON.stringify(rlt.data.data.PageInfo.list)
+                 })*/
+            },
+        };
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            this.$apply();
+            console.log(px2rpx);
+        }
+    }
+</script>
+<style lang="less">
+    page{
+        background:rgba(241,241,241,1);
+    }
+    .search{
+        .searchtop{
+            color:rgba(51,51,51,1);
+            box-sizing: border-box;
+            border-bottom: 2rpx solid #FFF1F1F1;
+            .searchtit{
+                width: 30%;
+            }
+            .searchcon{
+                box-sizing: border-box;
+                padding-left: 30rpx;
+                width: 70%;
+                border-radius: 5px;
+                border:1px solid rgba(153,153,153,1);
+                position: relative;
+                .botlist{
+                    position: absolute;
+                }
+            }
+        }
+
+    }
+</style>

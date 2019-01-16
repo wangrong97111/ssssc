@@ -1,0 +1,978 @@
+<template>
+    <!--订单审核————订单详情-->
+    <view class="examineOrderDetail">
+        <!--top-->
+        <view class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px;">
+            <view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="leftpart flex-start" style="width: 30%;"><view class="red">*</view>运输条款</view>
+                <view class="rightpart flex-end">
+                    <view style="margin-right: {{px2rpxWidth*8}}px;" class="flex-end blue">
+                        <view wx:if="{{order.start==1}}">起始:门</view>
+                        <view wx:if="{{order.start==2}}">起始:港</view>
+                        <view wx:if="{{order.start==3}}">起始:场站</view>
+                        <view wx:if="{{order.start==4}}">起始:CFS</view>
+                        <view style="font-weight: bold;">—></view>
+                        <view wx:if="{{order.end==1}}">目的:门</view>
+                        <view wx:if="{{order.end==2}}">目的:港</view>
+                        <view wx:if="{{order.end==3}}">目的:场站</view>
+                        <view wx:if="{{order.end==4}}">目的:CFS</view>
+                    </view>
+                   <!-- <view style="margin-right: {{px2rpxWidth*8}}px;">
+                        <image src="../../static/image/choose.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.transport_clause=='0'}}"></image>
+                        <image src="../../static/image/empty.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                    </view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">港到港</view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">
+                        <image src="../../static/image/choose.png"
+                                style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.transport_clause=='1'}}"></image>
+                        <image src="../../static/image/empty.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                    </view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">港到门</view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">
+                        <image src="../../static/image/choose.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.transport_clause=='2'}}"></image>
+                        <image src="../../static/image/empty.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                    </view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">门到港</view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">
+                        <image src="../../static/image/choose.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.transport_clause=='3'}}"></image>
+                        <image src="../../static/image/empty.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                    </view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">门到门</view>-->
+                </view>
+            </view>
+            <!--<view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="leftpart flex-start"><view class="red"></view></view>
+                <view class="rightpart flex-end">
+                     <view style="margin-right: {{px2rpxWidth*8}}px;">
+                         <image src="../../static/image/choose.png"
+                                style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.transport_clause=='4'}}"></image>
+                         <image src="../../static/image/empty.png"
+                                style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                     </view>
+                     <view style="margin-right: {{px2rpxWidth*8}}px;">场站</view>
+                     <view style="margin-right: {{px2rpxWidth*8}}px;">
+                         <image src="../../static/image/choose.png"
+                                style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.transport_clause=='5'}}"></image>
+                         <image src="../../static/image/empty.png"
+                                style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                     </view>
+                     <view style="margin-right: {{px2rpxWidth*8}}px;">CFS</view>
+                </view>
+            </view>-->
+            <view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="leftpart flex-start" style="width: 30%;"><view class="red">*</view>业务性质</view>
+                <view class="rightpart flex-end">
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">
+                        <image src="../../static/image/choose.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.business_type=='0'}}"></image>
+                        <image src="../../static/image/empty.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                    </view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">内贸</view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">
+                        <image src="../../static/image/choose.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.business_type=='1'}}"></image>
+                        <image src="../../static/image/empty.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                    </view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">外贸</view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">
+                        <image src="../../static/image/choose.png"
+                               style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.telex_release=='1'}}"></image>
+                         <image src="../../static/image/empty.png"
+                                  style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                    </view>
+                    <view style="margin-right: {{px2rpxWidth*8}}px;">电放</view>
+                </view>
+            </view>
+            <view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;" >
+                <view class="flex-start" style="width: 30%;"><view class="red">*</view>业务人员</view>
+                <view class="rightpart flex-end">{{order.salesmanName}}</view>
+            </view>
+            <view class="line flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="flex-start" style="width: 30%;"><view class="red">*</view>提单号</view>
+                <view class="rightpart flex-end">{{order.out_number}}</view>
+            </view>
+            <!--<view class="flex-between"
+                  style="height:{{px2rpxHeight*82}}px;">
+                <view class="flex-start"><view class="red">*</view>海运费</view>
+                <view class="rightpart flex-end">XXXXXXX</view>
+            </view>-->
+        </view>
+        <!--船期与路径-->
+        <view>
+            <view class="bz flex-between bluebac white f15"  @tap="shipData" style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+                <view>*船期与路径</view>
+                <view>
+                    <image src="../../static/image/addp.png" style="width: {{px2rpxWidth*30}}px;height: {{px2rpxWidth*4}}px;"></image>
+                </view>
+            </view>
+            <view wx:if="{{shipData}}" class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*610}}px;padding:0 {{px2rpxHeight*30}}px;">
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">起始港</view>
+                    <view class="rightpart flex-end">{{order.starting1}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">目的港</view>
+                    <view class="rightpart flex-end">{{order.destination}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">航线</view>
+                    <view class="rightpart flex-end">{{order.ship_num}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">船名</view>
+                    <view class="rightpart flex-end">{{order.ship_name}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">船东</view>
+                    <view class="rightpart flex-end">{{order.ship_east}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">ETD</view>
+                    <view class="rightpart flex-end">{{order.eta_time}}</view>
+                </view>
+                <view class="flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">进港</view>
+                    <view class="rightpart flex-end">{{order.etd_time}}</view>
+                </view>
+            </view>
+        </view>
+        <!--箱型-->
+        <view>
+            <view class="bz flex-between bluebac white f15" @tap="boxSize"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+                <view>*箱型</view>
+                <view>
+                    <image src="../../static/image/addp.png" style="width: {{px2rpxWidth*30}}px;height: {{px2rpxWidth*4}}px;"></image>
+                </view>
+            </view>
+            <view wx:if="{{boxSize}}" class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px;">
+                <block wx:for="{{xiangxing}}" wx:key="{{index}}">
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">箱型</view>
+                    <view class="rightpart flex-end">{{item.type}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">箱量</view>
+                    <view class="rightpart flex-end">{{item.num}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="leftpart flex-start">其他</view>
+                    <view class="rightpart flex-end">
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">
+                            <image src="../../static/image/choose.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{(item.soc)}}"></image>
+                            <image src="../../static/image/empty.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{!(item.soc)}}"></image>
+                        </view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">SOC</view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">
+                            <image src="../../static/image/choose.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{(item.kong)}}"></image>
+                            <image src="../../static/image/empty.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{!(item.kong)}}"></image>
+                        </view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">空箱</view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">
+                            <image src="../../static/image/choose.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{(item.heavy)}}"></image>
+                            <image src="../../static/image/empty.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{!(item.heavy)}}"></image>
+                        </view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">加重</view>
+                    </view>
+                </view>
+                    <view class="bluebac" style="width: 100%;height: {{px2rpxWidth*3}}px; "></view>
+                </block>
+            </view>
+        </view>
+        <!--货物信息-->
+        <view>
+            <view class="bz flex-between bluebac white f15" @tap="goodsSize"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+                <view>*货物信息</view>
+                <view>
+                    <image src="../../static/image/addp.png" style="width: {{px2rpxWidth*30}}px;height: {{px2rpxWidth*4}}px;"></image>
+                </view>
+            </view>
+            <view wx:if="{{goodsSize}}" class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*695}}px;padding:0 {{px2rpxHeight*30}}px;">
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">品名</view>
+                    <view class="rightpart flex-end">{{order.product_name}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="leftpart flex-start">货类</view>
+                    <view class="rightpart flex-end">
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">
+                            <image src="../../static/image/choose.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.goods_type=='0'}}"></image>
+                            <image src="../../static/image/empty.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                        </view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">普通</view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">
+                            <image src="../../static/image/choose.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.goods_type=='1'}}"></image>
+                            <image src="../../static/image/empty.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                        </view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">冷藏</view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">
+                            <image src="../../static/image/choose.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.goods_type=='2'}}"></image>
+                            <image src="../../static/image/empty.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                        </view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">危险品</view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">
+                            <image src="../../static/image/choose.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.goods_type=='3'}}"></image>
+                            <image src="../../static/image/empty.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                        </view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">液体</view>
+                    </view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="leftpart flex-start"></view>
+                    <view class="rightpart flex-end">
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">
+                            <image src="../../static/image/choose.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.goods_type=='4'}}"></image>
+                            <image src="../../static/image/empty.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                        </view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">活动物</view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">
+                            <image src="../../static/image/choose.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:if="{{order.goods_type=='5'}}"></image>
+                            <image src="../../static/image/empty.png"
+                                   style="width:{{px2rpxWidth*27}}px;height:{{px2rpxWidth*27}}px;" wx:else></image>
+                        </view>
+                        <view style="margin-right: {{px2rpxWidth*8}}px;">其他</view>
+                    </view>
+                </view>
+
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">包装及标志</view>
+                    <view class="rightpart flex-end">{{order.packing_sign}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">总件数</view>
+                    <view class="rightpart flex-end">{{order.total_number}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">总重量(毛量/公斤)</view>
+                    <view class="rightpart flex-end">{{order.total_weight}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">总体积(m3)</view>
+                    <view class="rightpart flex-end">{{order.total_volume}}</view>
+                </view>
+                <view class="flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">备注</view>
+                    <view class="rightpart flex-end">{{order.goodsComment}}</view>
+                </view>
+            </view>
+        </view>
+        <!--运输相关方-->
+        <view>
+            <view class="bz flex-between bluebac white f15" @tap="carrige"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+                <view>*运输相关方</view>
+                <view>
+                    <image src="../../static/image/addp.png" style="width: {{px2rpxWidth*30}}px;height: {{px2rpxWidth*4}}px;"></image>
+                </view>
+            </view>
+            <view  wx:if="{{carrige}}" >
+                <!--发货人-->
+                <view class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px; margin-top: {{px2rpxHeight*10}}px; ">
+                    <view class="line flex-start blue f15"
+                          style="height:{{px2rpxHeight*82}}px;font-weight:bold;">
+                        发货人
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">名称</view>
+                        <view class="rightpart flex-end">{{outAddMsg.goods_name}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="min-height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">地址</view>
+                        <view class="rightpart flex-end" >{{outAddMsg.address}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">联系人</view>
+                        <view class="rightpart flex-end">{{outAddMsg.name}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">电话</view>
+                        <view class="rightpart flex-end">{{outAddMsg.phone}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">传真</view>
+                        <view class="rightpart flex-end">{{outAddMsg.fax}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">QQ</view>
+                        <view class="rightpart flex-end">{{outAddMsg.qq}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">邮箱</view>
+                        <view class="rightpart flex-end">{{outAddMsg.mailbox}}</view>
+                    </view>
+                    <view class="flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">微信</view>
+                        <view class="rightpart flex-end">{{outAddMsg.wechat}}</view>
+                    </view>
+                </view>
+                <!--收货人-->
+                <view class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px; margin-top: {{px2rpxHeight*10}}px;">
+                    <view class="line flex-start blue f15"
+                          style="height:{{px2rpxHeight*82}}px;font-weight:bold;">
+                        收货人
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">名称</view>
+                        <view class="rightpart flex-end">{{inAddMsg.goods_name}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="min-height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">地址</view>
+                        <view class="rightpart flex-end">{{inAddMsg.address}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">联系人</view>
+                        <view class="rightpart flex-end">{{inAddMsg.name}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">电话</view>
+                        <view class="rightpart flex-end">{{inAddMsg.phone}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">传真</view>
+                        <view class="rightpart flex-end">{{inAddMsg.fax}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">QQ</view>
+                        <view class="rightpart flex-end">{{inAddMsg.qq}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">邮箱</view>
+                        <view class="rightpart flex-end">{{inAddMsg.mailbox}}</view>
+                    </view>
+                    <view class="flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">微信</view>
+                        <view class="rightpart flex-end">{{inAddMsg.wechat}}</view>
+                    </view>
+                </view>
+                <!--代理人——订舱人-->
+                <view class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px; margin-top: {{px2rpxHeight*10}}px;">
+                    <view class="line flex-start blue f15"
+                          style="height:{{px2rpxHeight*82}}px;font-weight:bold;">
+                        订舱人
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">名称</view>
+                        <view class="rightpart flex-end">{{takeAddMsg.goods_name}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="min-height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">地址</view>
+                        <view class="rightpart flex-end">{{takeAddMsg.address}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">联系人</view>
+                        <view class="rightpart flex-end">{{takeAddMsg.name}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">电话</view>
+                        <view class="rightpart flex-end">{{takeAddMsg.phone}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">传真</view>
+                        <view class="rightpart flex-end">{{takeAddMsg.fax}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">QQ</view>
+                        <view class="rightpart flex-end">{{takeAddMsg.qq}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">邮箱</view>
+                        <view class="rightpart flex-end">{{takeAddMsg.mailbox}}</view>
+                    </view>
+                    <view class="flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">微信</view>
+                        <view class="rightpart flex-end">{{takeAddMsg.wechat}}</view>
+                    </view>
+                </view>
+                <!--联系人——通知人-->
+                <view class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px; margin-top: {{px2rpxHeight*10}}px;">
+                    <view class="line flex-start blue f15"
+                          style="height:{{px2rpxHeight*82}}px;font-weight:bold;">
+                        通知人
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">名称</view>
+                        <view class="rightpart flex-end">{{conPer.goods_name}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="min-height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">地址</view>
+                        <view class="rightpart flex-end">{{conPer.address}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">联系人</view>
+                        <view class="rightpart flex-end">{{conPer.name}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">电话</view>
+                        <view class="rightpart flex-end">{{conPer.phone}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">传真</view>
+                        <view class="rightpart flex-end">{{conPer.fax}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">QQ</view>
+                        <view class="rightpart flex-end">{{conPer.qq}}</view>
+                    </view>
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">邮箱</view>
+                        <view class="rightpart flex-end">{{conPer.mailbox}}</view>
+                    </view>
+                    <view class="flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">微信</view>
+                        <view class="rightpart flex-end">{{conPer.wechat}}</view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <!--运费-->
+        <view>
+            <view @tap="transpay" class="bz flex-between bluebac white f15"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+                <view>海运费</view>
+                <view>
+                    <image src="../../static/image/addp.png" style="width: {{px2rpxWidth*30}}px;height: {{px2rpxWidth*4}}px;"></image>
+                </view>
+            </view>
+            <view wx:if="{{transpay}}" class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px;">
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">海运费总额</view>
+                    <view class="rightpart flex-end">{{totalY}}元</view>
+                </view>
+                <view class="line flex-start blue f15"
+                      style="height:{{px2rpxHeight*82}}px;font-weight: bold">
+                    海运费明细
+                </view>
+                <block wx:for="{{yunfei}}" wx:key="{{index}}">
+                    <view class="line flex-between"
+                          style="height:{{px2rpxHeight*82}}px;">
+                        <view class="flex-start">{{item.name}}</view>
+                        <view class="rightpart flex-end">{{item.money}}元</view>
+                    </view>
+                </block>
+            </view>
+        </view>
+        <!--承运费-->
+        <view>
+            <view @tap="transaddpay" class="bz flex-between bluebac white f15"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+                <view>承运费</view>
+                <view>
+                    <image src="../../static/image/addp.png" style="width: {{px2rpxWidth*30}}px;height: {{px2rpxWidth*4}}px;"></image>
+                </view>
+            </view>
+            <view wx:if="{{transaddpay}}" class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px;">
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">承运费总额</view>
+                    <view class="rightpart flex-end">{{totalC}}元</view>
+                </view>
+                <view class="line flex-between blue f15"
+                      style="height:{{px2rpxHeight*82}}px;font-weight: bold">
+                   <view class="query flex-center"> 供应商类型</view>
+                   <view class="query flex-center"> 公司名称</view>
+                   <view class="query flex-center"> 应付费用(元)</view>
+                   <view class="query2 flex-center"> 备注</view>
+                </view>
+                <block wx:for="{{yunAllC}}" wx:key="{{index}}">
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view  class="query flex-center" wx:if="{{item.supplier=='1'}}">船东</view>
+                    <view  class="query flex-center" wx:if="{{item.supplier=='2'}}">车队</view>
+                    <view  class="query flex-center" wx:if="{{item.supplier=='3'}}">堆场</view>
+                    <view  class="query flex-center" wx:if="{{item.supplier=='4'}}">码头</view>
+                    <view  class="query flex-center">{{item.company}}</view>
+                    <view  class="query flex-center">{{item.pay_money}}元</view>
+                    <view  class="query2 flex-center">
+                        <view @tap="clickRemark" data-mark="{{item.bearComment}}" class="bluebac flex-center white f12" style="width: {{px2rpxWidth*100}}px;height:{{px2rpxHeight*51}}px;border-radius: 5px">
+                            查看
+                        </view>
+                    </view>
+
+                </view>
+                </block>
+            </view>
+        </view>
+        <!--订舱备注-->
+        <view>
+            <view @tap="remarks" class="bz flex-between bluebac white f15"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+                <view>订舱备注</view>
+                <view>
+                    <image src="../../static/image/addp.png" style="width: {{px2rpxWidth*30}}px;height: {{px2rpxWidth*4}}px;"></image>
+                </view>
+            </view>
+            <view wx:if="{{remarks}}" class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*220}}px;padding:{{px2rpxHeight*30}}px;">
+                <view class="borline"
+                      style="height:{{px2rpxHeight*152}}px;">
+                    {{order.comment}}
+                </view>
+            </view>
+        </view>
+        <!--查看备注-->
+        <view wx:if="{{refuseview}}">
+            <view class="mask" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*1537}}px;"></view>
+            <view class="bord" style="width:{{px2rpxWidth*579}}px;height:{{px2rpxHeight*522}}px;margin-top: {{px2rpxHeight*250}}px;margin-left:{{px2rpxWidth*87}}px; ">
+                <view class="bord-top felx-center blue f15" style="margin:{{px2rpxHeight*44}}px 0;">备注</view>
+                <view class="flex-center">
+                    <view class="textarea f15" style="width:{{px2rpxWidth*486}}px;height:{{px2rpxHeight*229}}px;margin-bottom: {{px2rpxHeight*50}}px;">
+                        {{remarkCon}}
+                    </view>
+                </view>
+                <button @tap="refuseok" class="refusebtn1 flex-center bluebac white f13" style="width:{{px2rpxWidth*195}}px;height:{{px2rpxHeight*62}}px;">
+                    关闭
+                </button>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import api from '@/utils/api';
+    import {PX_TO_RPX} from '@/utils/constant';
+    import {calcAdd} from '@/utils/calculate';
+
+    //import ClassifyStore from '@/components/classifystore';
+
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '订单详情',
+        };
+        components = {
+            //classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            refuseview:false,       //承运费——备注
+            shipData:true,     //船期与路径
+            boxSize:true,      //箱型
+            goodsSize:true,        //货物信息
+            carrige:true,      //运输相关方
+            transpay:true,     //运费
+            transaddpay:true,      //承运费
+            remarks:true,      //订舱备注
+            //订单详情
+            order:[],
+            //发货人信息
+            outAddMsg:[],
+            //收货人信息
+            inAddMsg:[],
+            //代理人信息
+            takeAddMsg:[],
+            //联系人
+            conPer:[],
+            //运费
+            yunfei:[],
+            totalY:'',
+            //承运费
+            yunfeiC:[],
+            totalC:'',
+            //备注详情
+            remarkCon:'',
+            //箱型
+            xiangxing:[],
+            //承运费
+            yunAllC:[],
+        };
+
+        computed = {};
+
+        methods = {
+            //点击查看备注
+            clickRemark(e){
+                this.remarkCon =e.currentTarget.dataset.mark;
+                this.refuseview = true;
+            },
+            //关闭备注
+            refuseok() {
+                this.refuseview=false;
+            },
+            //收缩框
+            //船期与路径
+            shipData(){
+                this.shipData=!this.shipData;
+                this.$apply();
+            },
+            //箱型
+            boxSize(){
+                this.boxSize=!this.boxSize;
+                this.$apply();
+            },
+            //货物信息
+            goodsSize(){
+                this.goodsSize=!this.goodsSize;
+                this.$apply();
+            },
+            //运输相关方
+            carrige(){
+                this.carrige=!this.carrige;
+                this.$apply();
+            },
+            //运费
+            transpay(){
+                this.transpay=!this.transpay;
+                this.$apply();
+            },
+            //承运费
+            transaddpay(){
+                this.transaddpay=!this.transaddpay;
+                this.$apply();
+            },
+            //订舱备注
+            remarks(){
+                this.remarks=!this.remarks;
+                this.$apply();
+            },
+        };
+
+        events = {};
+
+        // 订单详情
+        async orderDetail(options){
+            let rlt = await api.selectOneOrder({
+                query: {
+                    number:options.orderNum,  //订单编号
+                }
+            });
+            console.log(rlt.data.data)
+            this.order = rlt.data.data[0];
+            this.yunAllC = rlt.data.data;
+            //承运费总额
+            this.totalC=0;
+            let aa = this.yunAllC.length;
+            for(let i=0;i<aa;i++){
+                this.totalC = calcAdd(this.totalC,this.yunAllC[i].pay_money)
+                // this.totalC += this.yunAllC[i].pay_money;
+            }
+            console.log(2222)
+            console.log(this.order.transport_fee_money)
+            //运费
+            let a = this.judge(this.order.transport_fee_money);
+            if(a){
+                this.spData1(this.order);
+            }
+           /* //承运费
+            let b = this.judge(this.order.pay_money);
+            if(b){
+                this.spData2(this.order);
+            }*/
+            //箱型
+            let c = this.judge(this.order.box_type);
+            if(c){
+                this.spData3(this.order);
+            }
+            this.$apply();
+        };
+        //运费
+        spData1(data){
+            this.yunfei=[];
+            this.totalY=0;
+            let a = data.transport_fee_money.split(',');
+            a.pop();
+            let b = data.transport_name.split(',');
+            b.pop();
+            for(let i=0;i<a.length;i++) {
+                console.log(a[i], b[i])
+                this.yunfei.push({
+                    money: a[i],
+                    name: b[i]
+                });
+                this.totalY += Number(a[i]);
+            }
+        };
+        //承运费
+        spData2(data){
+            this.yunfeiC=[];
+            this.totalC=0;
+            let a = data.pay_money.split(',');
+            a.pop();
+            let b = data.bearComment.split(',');
+            let c = data.supplier.split(',');
+            let d = data.company.split(',');
+            for(let i=0;i<a.length;i++){
+                this.yunfeiC.push({
+                    money:a[i],
+                    mark:b[i],
+                    type:c[i],
+                    name:d[i],
+                })
+                this.totalC += Number(a[i]);
+            }
+
+        };
+        //箱型
+        spData3(data){
+            this.xiangxing = [];
+            let a = data.box_liang.split(',');
+            a.pop();
+            let b = data.box_type.split(',');
+            let c = data.soc.split(',');
+            c.pop();
+            let f =[];
+            for(let i=0;i<c.length;i++){
+                if (c[i] == 'true') {
+                    f.push(true);
+                }else{
+                    f.push(false);
+                }
+            }
+            let d = data.kong_box.split(',');
+            d.pop();
+            let g =[];
+            for(let i=0;i<d.length;i++){
+                if (d[i] == 'true') {
+                    g.push(true);
+                }else{
+                    g.push(false);
+                }
+            }
+            let e = data.add_heavy.split(',');
+            e.pop();
+            let h =[];
+            for(let i=0;i<e.length;i++){
+                if (e[i] == 'true') {
+                    h.push(true);
+                }else{
+                    h.push(false);
+                }
+            }
+            for(let i=0;i<a.length;i++){
+                this.xiangxing.push({
+                    num:a[i],
+                    type:b[i],
+                    soc:f[i],
+                    kong:g[i],
+                    heavy:h[i],
+                });
+            }
+        };
+        // ','截取成数组
+        judge(data){
+            // console.log(data);
+            let a =[];
+            let Str = data;
+            a = Str.split(',');
+            if (a.length>1) {
+                return true;
+            }else{
+                return false;
+            }
+        };
+        // 地址详情-----发货人
+        async outAdd(options){
+            let rlt = await api.selectAddressOrder({
+                query: {
+                    flag:'0',
+                    number:options.orderNum,  //订单编号
+                    // number:'DC20181123115758257',  //订单编号
+                }
+            });
+            // console.log(rlt.data.data)
+            this.outAddMsg = rlt.data.data[0];
+            this.$apply();
+        };
+        // 地址详情-----收货人地址
+        async inAdd(options){
+            let rlt = await api.selectAddressOrder({
+                query: {
+                    flag:'1',
+                    number:options.orderNum,  //订单编号
+                    // number:'DC20181123115758257',  //订单编号
+                }
+            });
+            // console.log(rlt.data.data)
+            this.inAddMsg = rlt.data.data[0];
+            this.$apply();
+        };
+        // 地址详情-----代理人地址
+        async takeAdd(options){
+            let rlt = await api.selectAddressOrder({
+                query: {
+                    flag:'2',
+                    number:options.orderNum,  //订单编号
+                    // number:'DC20181123115758257',  //订单编号
+                }
+            });
+            // console.log(rlt.data.data)
+            this.takeAddMsg = rlt.data.data[0];
+            this.$apply();
+        };
+        // 地址详情-----联系人地址
+        async takePer(options){
+            let rlt = await api.selectAddressOrder({
+                query: {
+                    flag:'3',
+                    number:options.orderNum,  //订单编号
+                    // number:'DC20181123115758257',  //订单编号
+                }
+            });
+            // console.log(rlt.data.data)
+            this.conPer = rlt.data.data[0];
+            this.$apply();
+        };
+
+        async onLoad(options) {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            //订单详情
+            this.orderDetail(options)
+            //发货人地址
+            this.outAdd(options)
+            //收货人地址
+            this.inAdd(options)
+            //代理人地址
+            this.takeAdd(options)
+            //联系人地址
+            this.takePer(options)
+            //
+            // console.log(rlt.data.data.PageInfo.list)
+            this.$apply();
+        }
+    }
+</script>
+<style lang="less">
+    page{
+        background:rgba(241,241,241,1);
+    }
+    .examineOrderDetail{
+        .bz{
+            box-sizing: border-box;
+            padding-left: 30rpx;
+            padding-right: 30rpx;
+        }
+        .searchdetail{
+            /*transition: border-bottom-color .3s;*/
+            box-sizing: border-box;
+            border-radius: 5px;
+            .rightpart {
+                /*width: 80%;*/
+            }
+            .leftpart{
+                width: 20%;
+            }
+            .line{
+                border-bottom: 1px solid #FFF2F2F2;
+            }
+            .borline{
+                box-sizing: border-box;
+                padding: 10rpx;
+                border:1px solid rgba(153,153,153,1);
+                border-radius: 5px;
+                font-weight:400;
+                color:rgba(51,51,51,1);
+            }
+            .query{
+                width: 27%;
+            }
+            .query2{
+                width: 19%;
+            }
+        }
+        /*弹出遮罩备注*/
+        /*遮罩层*/
+        .mask{
+            position:fixed;
+            top :0rpx;
+            background-color:#000;
+            opacity:0.55;
+            z-index: 2001;
+
+        }
+        .bord{
+            position:fixed;
+            top :0rpx;
+            background-color: #ffffff;
+            z-index: 2002;
+            border-radius: 5px;
+            .bord-top{
+                /*font-weight: bold;*/
+                text-align: center;
+            }
+            .textarea{
+                border:1px solid rgba(153,153,153,1);
+                box-sizing: border-box;
+                padding: 20rpx;
+            }
+        }
+    }
+</style>

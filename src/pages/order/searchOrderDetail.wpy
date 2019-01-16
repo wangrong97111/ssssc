@@ -1,0 +1,430 @@
+<template>
+    <view class="searchorderdetail">
+        <view class="flex-center">
+            <view class="red top flex-end f14"
+                  style="width:{{px2rpxWidth*690}}px;height:{{px2rpxHeight*70}}px;">
+                   总条数：{{len}}条
+            </view>
+        </view>
+        <view wx:if="{{NoData}}" class="f18 flex-center" style="margin-top:{{px2rpxHeight*100}}px; ">
+            未搜索到结果
+        </view>
+        <block wx:for="{{orderObj}}" wx:key="{{index}}">
+            <view class="searchdetail whitebac f13"
+                  style="width:{{px2rpxWidth*690}}px;margin-top: {{px2rpxHeight*10}}px; padding: {{px2rpxHeight*20}}px;;">
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <!--{{index+1}}-->
+                    <view class="lineleft flex-start">航名/航次</view>
+                    <view class="noline flex-end f14">{{item.ship_name}}/{{item.ship_num}}</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">船东</view>
+                    <view class="noline flex-end f14">{{item.ship_east}}</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">订单号</view>
+                    <view class="noline flex-end f14">{{item.order_num}}</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">订舱时间</view>
+                    <view class="noline flex-end f14">{{item.creation_time}}</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">订单详情</view>
+                    <view class="noline flex-end f14 blue" data-num="{{item.order_num}}" @tap="seeOrderDetail">查看</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">审核状态</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag3=='0'}}">待审核</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag3=='1'}}">审核中</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag3=='2'}}">重新审核</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag3=='3'}}">已完成</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag3=='4'}}">重新审核</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">运输完成时间</view>
+                    <view class="noline flex-end f14 ">{{item.update_time}}</view>
+                </view>
+                <view class=" f14"flex-between
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">收款</view>
+                    <view class="noline flex-end f14 red"></view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="lineleft flex-start">付款</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag2=='0'}}">未支付</view>
+                    <view class="noline flex-end f14 red" wx:if="{{item.flag2=='1'}}">已支付</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="flex-start">付款</view>
+                    <view class="noline flex-end f14 blue" data-book="{{item.books}}" @tap="seeConfirm">订舱确认书</view>
+                </view>
+                <view class="flex-between f14"
+                      style="height:{{px2rpxHeight*50}}px;">
+                    <view class="flex-start"></view>
+                    <view class="noline flex-end f14 blue" data-bill="{{item.waybill}}" @tap="seeConfirm2">运单</view>
+                </view>
+            </view>
+        </block>
+        <!--订舱确认书-->
+        <view wx:if="{{confirmview}}">
+            asfas
+            <view class="mask" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*1537}}px;"></view>
+            <view class="bord"
+                  style="width:{{px2rpxWidth*579}}px;height:{{px2rpxHeight*758}}px;margin-top: {{px2rpxHeight*150}}px;margin-left:{{px2rpxWidth*87}}px; ">
+                <view class="bord-top felx-center blue f15" style="margin:{{px2rpxHeight*44}}px 0;">订舱确认书</view>
+                <view class="flex-center">
+                    <view class="textarea f14"
+                          style="width:{{px2rpxWidth*486}}px;height:{{px2rpxHeight*480}}px;margin-bottom: {{px2rpxHeight*50}}px;">
+                        <view wx:if="{{viewb}}"> {{book}}</view>
+                        <image src="{{book}}" style="width:100%;height:100%" />
+                    </view>
+                </view>
+                <view class="flex-end">
+                    <button @tap="confirmcancel" class="refusebtn2 flex-center whitebac blue f13"
+                            style="width:{{px2rpxWidth*195}}px;height:{{px2rpxHeight*62}}px;">
+                        关闭
+                    </button>
+                </view>
+            </view>
+        </view>
+        <!--运单-->
+        <view wx:if="{{confirmview2}}">
+            <view class="mask" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*1537}}px;"></view>
+            <view class="bord"
+                  style="width:{{px2rpxWidth*579}}px;height:{{px2rpxHeight*758}}px;margin-top: {{px2rpxHeight*150}}px;margin-left:{{px2rpxWidth*87}}px; ">
+                <view class="bord-top felx-center blue f15" style="margin:{{px2rpxHeight*44}}px 0;">运单</view>
+                <view class="flex-center">
+                    <view class="textarea f14"
+                          style="width:{{px2rpxWidth*486}}px;height:{{px2rpxHeight*480}}px;margin-bottom: {{px2rpxHeight*50}}px;">
+                        <view wx:if="{{viewl}}">{{bill}}</view>
+                        <image src="{{bill}}" style="width:100%;height:100%" />
+                    </view>
+                </view>
+                <view class="flex-end">
+                    <button @tap="confirmcancel2" class="refusebtn2 flex-center whitebac blue f13"
+                            style="width:{{px2rpxWidth*195}}px;height:{{px2rpxHeight*62}}px;">
+                        关闭
+                    </button>
+                </view>
+            </view>
+        </view>
+        <view wx:if="{{viewAll}}">
+            <i-load-more tip="已经到底了" loading="{{false}}" />
+        </view>
+        <view style="width: 100%;height:{{px2rpxHeight*50}}px;"></view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {PX_TO_RPX} from '@/utils/constant';
+    import api from '@/utils/api';
+    //import ClassifyStore from '@/components/classifystore';
+    //分页
+    let page=1;
+    let pageSize=20;
+    let isLastPage=false;
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '订单查询详情',
+            "usingComponents": {
+                "i-load-more": "../../iview/load-more/index"
+            }
+        };
+        components = {
+            //classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            //查询订单列表
+            orderObj: [],
+            //
+            shipName: '',       //船名/航次
+            startDay: '',       //订舱开始时间
+            endDay: '',         //订舱结束时间
+            //总条数
+            len:'',
+            //数据加载完毕
+            viewAll:false,
+            //无数据
+            NoData:false,
+            //订舱确认书
+            book:'',
+            confirmview:false,
+            bill:'',
+            confirmview2:false,
+            viewb:false,
+            viewl:false,
+            uploadFileUrl:'http://jiaoyuvideo.oss-cn-beijing.aliyuncs.com/',
+        };
+
+        computed = {};
+
+        methods = {
+            //点击查看订单详情
+            seeOrderDetail(e) {
+                // console.log(num)
+                // console.log(e.currentTarget.dataset.num)
+                //跳转订单详情页面传参订单编号
+                wx.navigateTo({
+                    url: '/pages/order/examineOrderDetail?orderNum=' + e.currentTarget.dataset.num
+
+                })
+            },
+            //订舱确认书显示
+            seeConfirm(e){
+                console.log(e.currentTarget.dataset.book)
+                if(e.currentTarget.dataset.book){
+                    this.book = e.currentTarget.dataset.book;
+                  let aa = this.book.substr(this.book.lastIndexOf("."));
+                  if(aa=='.pdf'){
+                    wx.downloadFile({
+                      url: this.uploadFileUrl+this.book ,
+                      success: function (res) {
+                        console.log(res)
+                        var Path = res.tempFilePath              //返回的文件临时地址，用于后面打开本地预览所用
+                        wx.openDocument({
+                          filePath: Path,
+                          success: function (res) {
+                            console.log(res)
+                            console.log('打开成功');
+                          }
+                        })
+                      },
+                      fail: function (res) {
+                        console.log(res);
+                      }
+                    })
+                    this.confirmview=false;
+                  }else{
+                    this.confirmview = true;
+                    this.book=this.uploadFileUrl+this.book;
+                  }
+                }else{
+                  this.viewb=true;
+                  this.confirmview = true;
+                    this.book='暂无任何信息'
+                }
+                // this.confirmview = true;
+                this.$apply();
+            },
+            //订舱确认书关闭
+            confirmcancel() {
+                this.book = '';
+                this.confirmview = false;
+                this.$apply();
+            },
+            //运单
+            seeConfirm2(e){
+                console.log(e.currentTarget.dataset.bill)
+                if(e.currentTarget.dataset.bill){
+                    this.bill = e.currentTarget.dataset.bill;
+                  let aa = this.bill.substr(this.bill.lastIndexOf("."));
+                  if(aa=='.pdf'){
+                    wx.downloadFile({
+                      url: this.uploadFileUrl+this.bill ,
+                      success: function (res) {
+                        console.log(res)
+                        var Path = res.tempFilePath              //返回的文件临时地址，用于后面打开本地预览所用
+                        wx.openDocument({
+                          filePath: Path,
+                          success: function (res) {
+                            console.log(res)
+                            console.log('打开成功');
+                          }
+                        })
+                      },
+                      fail: function (res) {
+                        console.log(res);
+                      }
+                    })
+                    this.confirmview2=false;
+                  }else{
+                    this.confirmview2 = true;
+                    this.bill=this.uploadFileUrl+this.bill;
+                  }
+                }else{
+                  this.confirmview2 = true;
+                  this.viewl=true;
+                    this.bill='暂无任何信息'
+                }
+                // this.confirmview2 = true;
+                this.$apply();
+            },
+            //订舱确认书关闭
+            confirmcancel2() {
+                this.bill = '';
+                this.confirmview2 = false;
+                this.$apply();
+            },
+        };
+        //订单查询表
+        async orderList(){
+            let that = this;
+            // let rlt = await api.selectOrder({
+            let rlt = await api.selectOrderListAll({
+                query: {
+                    time: this.startDay,      //日期
+                    shipNum: this.endDay,      //航次
+                    shipName: this.shipName,   //船名
+                    page:page,
+                    pageSize:pageSize,
+                }
+            });
+            this.len = rlt.data.data.PageInfo.total;
+            isLastPage = rlt.data.data.PageInfo.isLastPage
+            this.orderObj= this.orderObj.concat(rlt.data.data.PageInfo.list);
+            //无数据时
+            if (this.len == 0) {
+                this.NoData = true;
+            }
+            this.$apply();
+        };
+
+        events = {};
+        /**
+         * 页面相关事件处理函数--监听用户下拉动作
+         */
+        onPullDownRefresh () {
+            console.log("page下拉动作")
+            wx.showLoading({
+                title: '努力加载中',
+            });
+            this.orderList();
+        };
+        /**
+         * 页面上拉触底事件的处理函数
+         */
+        onReachBottom () {
+            if(isLastPage){
+                this.viewAll =true;
+                wepy.showToast({
+                    title: '没有更多数据了',
+                    icon: 'none',
+                    mask: true,
+                    duration: 1000
+                })
+            }else{
+                wx.showLoading({
+                    title: '努力加载中',
+                });
+                page++;
+                this.orderList();
+            }
+        };
+        /**
+         * 页面下拉请求数据更新
+         */
+       /* onPullDownRefresh() {
+            wx.showLoading({
+                title: '努力加载中',
+            });
+            console.log('下拉刷新列表')
+            // this.exameList();
+            /!* setTimeout(function () {
+                 // 不加这个方法真机下拉会一直处于刷新状态，无法复位
+                 wepy.stopPullDownRefresh()
+             }, 5000)*!/
+        };*/
+
+        async onLoad(options) {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            //订单查询接受内容obj
+            // this.orderObj= JSON.parse(options.orderObj);//解析得到对象
+            //接查询内容
+            console.log(options)
+
+            this.startDay = options.startDay;  //时间
+            this.endDay = options.endDay;    //航次
+            this.shipName = options.shipName;  //航名
+            //查询列表方法
+            // this.methods.orderList(options.startDay,options.endDay,options.shipName)
+            this.orderList()
+            this.$apply();
+            console.log(px2rpx);
+        }
+    }
+</script>
+<style lang="less">
+    page {
+        background: rgba(241, 241, 241, 1);
+    }
+
+    .searchorderdetail {
+        .searchdetail {
+            margin: 0 auto;
+            box-sizing: border-box;
+            border-radius: 5px;
+
+        }
+        .lineleft {
+            width: 35%;
+        }
+        .noline {
+            width: 65%;
+        }
+        /*遮罩层*/
+        .mask {
+            position: fixed;
+            top: 0rpx;
+            background-color: #000;
+            opacity: 0.55;
+            z-index: 2001;
+        }
+        .bord {
+            position: fixed;
+            top: 0rpx;
+            background-color: #ffffff;
+            z-index: 2002;
+            border-radius: 5px;
+            .bord-top {
+                /*font-weight: bold;*/
+                text-align: center;
+            }
+            .textarea {
+                box-sizing: border-box;
+                padding: 10rpx;
+                border: 1px solid rgba(153, 153, 153, 1);
+            }
+            .refusebtn2 {
+                border: 1px solid rgba(1, 65, 155, 1);
+
+            }
+        }
+        /*加载*/
+        .loading {
+            padding: 10rpx;
+            text-align: center;
+        }
+
+        .loading:before {
+            display: inline-block;
+            margin-right: 5rpx;
+            vertical-align: middle;
+            content: '';
+            width: 40rpx;
+            height: 40rpx;
+            background-color: #ddd;
+            animation: rotate 1s linear infinite;
+        }
+
+        .loading.complete:before {
+            display: none;
+        }
+    }
+
+</style>

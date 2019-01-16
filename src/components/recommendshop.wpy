@@ -1,0 +1,64 @@
+<template>
+    <view class="recommendshop">
+        <scroll-view scroll-x>
+            <view class="flex-start">
+                <view class="rec-pic" style="width:{{px2rpxWidth*350}}px;height:{{px2rpxWidth*250}}px;">
+                    <image src="../../static/image/1.jpg"/>
+                </view>
+                <view class="rec-pic" style="width:{{px2rpxWidth*350}}px;height:{{px2rpxWidth*250}}px;">
+                    <image src="../../static/image/1.jpg"/>
+                </view>
+                <view class="rec-pic" style="width:{{px2rpxWidth*350}}px;height:{{px2rpxWidth*250}}px;">
+                    <image src="../../static/image/1.jpg"/>
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {
+        PX_TO_RPX
+    } from '@/utils/constant';
+
+
+    export default class RecommendShop extends wepy.component {
+        config = {
+            navigationBarTitleText: ''
+        };
+        components = {};
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+        };
+
+        computed = {};
+
+        methods = {};
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            this.$apply();
+
+        }
+
+    }
+</script>
+<style lang="less">
+    .recommendshop {
+        .rec-pic {
+
+        }
+    }
+
+    .recommendshop image {
+        width: 100%;
+        height: 100%;
+    }
+</style>

@@ -1,0 +1,112 @@
+<template>
+    <view class="authorize-contianer">
+        <image class="authorize-icon" src="../static/image/sq.png" style="width:{{px2rpxWidth*220}}px;height:{{px2rpxWidth*180}}px;"></image>
+        <view class="auth-item f16">上港申请获取以下权限：</view>
+        <view class="auth-item f16">获取你的公开信息（头像、昵称等）</view>
+        <view class="btn-authorize">
+            <!--<button class="bluebac white" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="onGotUserInfo">授权</button>-->
+       <button class="bluebac white" open-type='getUserInfo' bindgetuserinfo="getUserInfo">授权</button>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {PX_TO_RPX,SEL_CLASS_CODE} from '@/utils/constant';
+    
+    //import ClassifyStore from '@/components/classifystore';
+
+    export default class authorize extends wepy.page {
+        config = {
+            navigationBarTitleText: '授权登录',
+        }
+        components = {
+            //classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+        };
+
+        computed = {};
+
+        methods = {
+            //  获取头像
+            async getUserInfo(e){
+                console.log(55555555)
+                // console.log(e);
+                if (e.detail.errMsg == 'getUserInfo:ok'){
+                    // 授权成功
+                    wepy.redirectTo({
+                        url: '/pages/login'
+                    })
+                    console.log(66666)
+                    //从数据库获取用户信息
+                    /*let res = await wepy.login();
+                    console.log(res)*/
+                } else {
+                    wx.showToast({
+                        title: '授权失败',
+                        icon: 'none',
+                        duration: 1000,
+                        mask:true
+                    })
+                    return;
+                }
+            },
+        };
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            // 查看是否授权
+            wx.getSetting({
+                success: function (res) {
+                   // console.log(res.authSetting['scope.userInfo'])
+                    if (res.authSetting['scope.userInfo']) {
+                        wx.getUserInfo({
+                            success: function (res) {
+                                //用户已经授权过
+                                wepy.redirectTo({
+                                    url: '/pages/login'
+                                })
+                            }
+                        });
+                    }
+                }
+            });
+            this.$apply();
+
+
+        }
+    }
+</script>
+<style lang="less">
+    page {
+        /*height: 100%;*/
+    }
+
+    .authorize-contianer {
+        height: 100%;
+        background: #fff;
+        text-align: center;
+        padding-top: 100rpx;
+        .authorize-icon {
+            width: 128rpx;
+            height: 128rpx;
+            display: block;
+            margin: 0 auto;
+            padding-bottom: 10rpx;
+        }
+        .auth-item {
+            padding: 5rpx 0;
+        }
+        .btn-authorize {
+            margin: 100rpx 50rpx;
+        }
+    }
+</style>

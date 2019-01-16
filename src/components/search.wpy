@@ -1,0 +1,86 @@
+<template>
+    <view  class="content">
+        <view class="search flex-center">
+            <view class="serch_content flex-center">
+                <input type="text" class="search_input f14" name="search_input" bindinput="searchInput" value="{{search_input_value}}" confirm-type="search" placeholder="请输入店铺名称" style="height:{{px2rpxHeight*55}}px;" />
+                <view class="search-btn">
+                    <icon type="search" size="18" />
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {
+        PX_TO_RPX
+    } from '@/utils/constant';
+
+
+    export default class Search extends wepy.component {
+        config = {
+            navigationBarTitleText: ''
+        };
+        components = {};
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            search_input_value: '',
+            show : 1
+
+        };
+
+        computed = {};
+
+        methods = {
+            searchInput(e) {
+                console.log(e)
+                // this.search_input_value = e.detail.value;
+                // this.$apply();
+            },
+
+
+        };
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+
+            this.$apply();
+
+        }
+
+    }
+</script>
+<style lang="less">
+    .content {
+        position: fixed;
+        top: 0;
+        z-index: 9999;
+        width: 100%;
+        padding: 20rpx;
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+        background: linear-gradient(top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+    }
+
+    .search {
+        width: 95%;
+        .serch_content {
+            border-radius: 50px;
+            color: #333;
+            width: 100%;
+            background: #efefef;
+            padding: 5rpx 12rpx;
+            .search_input {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
+
+</style>

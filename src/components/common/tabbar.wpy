@@ -1,0 +1,257 @@
+<template>
+    <view class="tabbar flex-between f11">
+        <block wx:for="{{tabbar}}" wx:key="{{index}}">
+            <view class="tabbar-list flex-column" style="width:{{px2rpxWidth*100}}px;height:{{px2rpxHeight*100}}px;"
+                  data-index="{{index}}" @tap="tabbarclick">
+                <view>
+                    <image src='{{current==index?item.selectedIconPath:item.iconPath}}'
+                           style="width:{{px2rpxWidth*40}}px;height:{{px2rpxWidth*40}}px;"/>
+                </view>
+                <view style="color:{{current==index?item.selectIconColor:item.iconColor}}">
+                    {{item.text}}
+                </view>
+            </view>
+        </block>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {
+        PX_TO_RPX
+    } from '@/utils/constant';
+
+
+    export default class TabBar extends wepy.component {
+        config = {
+            navigationBarTitleText: 'home'
+        };
+        components = {};
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            level: 1,
+            tabbar: ''
+
+        };
+
+        props = {
+            current: {
+                type: Number,
+                default: 0
+            }
+        };
+
+        computed = {};
+
+        methods = {
+            tabbarclick(e) {
+                let index = e.currentTarget.dataset.index;
+                // this.current = index;
+                // console.log(this.tabbar);
+                let newtext = this.tabbar[index].text;
+                let newcurrent = this.current;
+
+                if (newcurrent == index) {
+                    return;
+                }
+                // 跳转
+                let url = this.tabbar[index].pagePath;
+                wepy.redirectTo({
+                    url: url
+                });
+
+                if (newtext == '我的店铺') {
+                    this.tabBarList(3);
+                    this.current = 3;
+                }
+                this.$apply();
+
+            }
+        };
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            // console.log(typeof this.current);
+            // console.log(this.current);
+            this.$apply();
+            // console.log(px2rpx);
+            this.tabBarList(this.level);
+
+
+        }
+
+
+        tabBarList(flag) {
+            if (flag == 1) {
+                this.tabbar = [
+                    {
+                        'pagePath': '/pages/home',
+                        'text': '商城',
+                        'iconPath': '../../static/image/tabbar/shop.png',
+                        'selectedIconPath': '../../static/image/tabbar/shop_in.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/classify',
+                        'text': '分类',
+                        'iconPath': '../../static/image/tabbar/shop_cate.png',
+                        'selectedIconPath': '../../static/image/tabbar/shop_cate_in.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/shopcar',
+                        'text': '购物车',
+                        'iconPath': '../../static/image/tabbar/shop_cart.png',
+                        'selectedIconPath': '../../static/image/tabbar/shop_cart_in.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/user',
+                        'text': '我的',
+                        'iconPath': '../../static/image/tabbar/user.png',
+                        'selectedIconPath': '../../static/image/tabbar/user_in.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/shop/openshop',
+                        'text': '申请开店',
+                        'iconPath': '../../static/image/tabbar/set-up-shop1.png',
+                        'selectedIconPath': '../../static/image/tabbar/set-up-shop2.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    }
+                ];
+            } else if (flag == 2) {
+                this.tabbar = [
+                    {
+                        'pagePath': '/pages/home',
+                        'text': '商城',
+                        'iconPath': '../../static/image/tabbar/shop.png',
+                        'selectedIconPath': '../../static/image/tabbar/shop_in.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/classify',
+                        'text': '分类',
+                        'iconPath': '../../static/image/tabbar/shop_cate.png',
+                        'selectedIconPath': '../../static/image/tabbar/shop_cate_in.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/shopcar',
+                        'text': '购物车',
+                        'iconPath': '../../static/image/tabbar/shop_cart.png',
+                        'selectedIconPath': '../../static/image/tabbar/shop_cart_in.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/user',
+                        'text': '我的',
+                        'iconPath': '../../static/image/tabbar/user.png',
+                        'selectedIconPath': '../../static/image/tabbar/user_in.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/shop/myshop',
+                        'text': '我的店铺',
+                        'iconPath': '../../static/image/tabbar/set-up-shop1.png',
+                        'selectedIconPath': '../../static/image/tabbar/set-up-shop2.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    }
+                ];
+            } else if (flag == 3) {
+                this.tabbar = [
+                    {
+                        'pagePath': '/pages/myGoods/goodsList/goodsList',
+                        'text': '我的商品',
+                        'iconPath': '../../static/image/tabbar/sellgoods.png',
+                        'selectedIconPath': '../../static/image/tabbar/sellgoods_r.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/orderManage/orderManage',
+                        'text': '订单管理',
+                        'iconPath': '../../static/image/tabbar/order.png',
+                        'selectedIconPath': '../../static/image/tabbar/order_r.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/moneyManage/moneyManage',
+                        'text': '财务管理',
+                        'iconPath': '../../static/image/tabbar/money.png',
+                        'selectedIconPath': '../../static/image/tabbar/money_r.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/shop/myshop',
+                        'text': '我的店铺',
+                        'iconPath': '../../static/image/tabbar/people.png',
+                        'selectedIconPath': '../../static/image/tabbar/people_r.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    }
+                ];
+            } else if (flag == 4) {
+                this.tabbar = [
+                    {
+                        'pagePath': '/pages/takeout/index/index',
+                        'text': '首页',
+                        'iconPath': '../../static/image/tabbar/home_icon.png',
+                        'selectedIconPath': '../../static/image/tabbar/select_home.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/takeout/order/order',
+                        'text': '订单',
+                        'iconPath': '../../static/image/tabbar/order_icon.png',
+                        'selectedIconPath': '../../static/image/tabbar/order_iconSelect.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    },
+                    {
+                        'pagePath': '/pages/takeout/userInfo/userInfo',
+                        'text': '我的',
+                        'iconPath': '../../static/image/tabbar/people.png',
+                        'selectedIconPath': '../../static/image/tabbar/people_select.png',
+                        'iconColor': '#8A8A8A',
+                        'selectIconColor': 'red'
+                    }
+                ];
+            }
+            this.$apply();
+        }
+
+    }
+</script>
+<style lang="less">
+    .tabbar {
+        position: fixed;
+        bottom: 0;
+        z-index: 999999999;
+        background-color: #F7F7FA;
+        width: 100%;
+        border-top: 1px solid #f1f1f1;
+        .tabbar-list {
+            padding: 0 20 rpx;
+        }
+    }
+</style>

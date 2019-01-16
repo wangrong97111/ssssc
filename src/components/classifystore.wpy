@@ -1,0 +1,103 @@
+<template>
+        <view class='classifystore'>
+            <block wx:for="{{group}}" wx:key="index">
+                <view class='nav1' style="height:{{px2rpxWidth*200}}px;">
+                    <image src="{{item.img}}" style="width:{{px2rpxWidth*120}}px;height:{{px2rpxWidth*120}}px;"></image>
+                    <view class="f14">{{item.navtext}}</view>
+                </view>
+            </block>
+        </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {
+        PX_TO_RPX
+    } from '@/utils/constant';
+
+
+    export default class ClassifyStore extends wepy.component {
+        config = {
+            navigationBarTitleText: ''
+        };
+        components = {};
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            group: [
+                {
+                    img: '',
+                    navtext: '外卖',
+                },
+                {
+                    img: '',
+                    navtext: '超市'
+                },
+                {
+                    img: '',
+                    navtext: '甜品'
+                },
+                {
+                    img: '',
+                    navtext: '快餐'
+                },
+                {
+                    img: '',
+                    navtext: '超市'
+                },
+                {
+                    img: '',
+                    navtext: '更多',
+                }
+            ],
+
+
+        };
+
+        computed = {};
+
+        methods = {
+            searchInput(e) {
+                console.log(e)
+                // this.search_input_value = e.detail.value;
+                // this.$apply();
+            },
+
+
+        };
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+
+            this.$apply();
+
+        }
+
+    }
+</script>
+<style lang="less">
+    .classifystore {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .classifystore image {
+        border-radius: 50px;
+        border: 1px solid #333;
+    }
+    .nav1 {
+        display: flex;
+        flex-direction: column;
+        justify-content:center;
+        align-items: center;
+        width: 25%;
+        font-size: 34rpx;
+        color: #333;
+    }
+
+</style>

@@ -1,0 +1,97 @@
+<template>
+    <!--账单审核-->
+    <view>
+        <view @tap="freight" class="examine1 flex-center" style="margin: {{px2rpxHeight*120}}px 0;">
+            <image src="../../static/image/buttonbg.png"
+                   style="width: {{px2rpxWidth*559}}px;height:{{px2rpxWidth*370}}px;"></image>
+            <view class="examine11 ">
+                <view class="flex-center" style="margin-bottom: {{px2rpxWidth*30}}px;">
+                    <image src="../../static/image/charge.png"
+                           style="width: {{px2rpxWidth*100}}px;height:{{px2rpxWidth*100}}px;"></image>
+                </view>
+                <view class="flex-center f19">
+                    线下订单审核
+                </view>
+            </view>
+        </view>
+        <view @tap="carriage" class="examine2 flex-center">
+            <image src="../../static/image/buttonbg.png"
+                   style="width: {{px2rpxWidth*559}}px;height:{{px2rpxWidth*370}}px;"></image>
+            <view class="examine22">
+                <view class="flex-center"  style="margin-bottom: {{px2rpxWidth*30}}px;">
+                    <image src="../../static/image/ship1.png"
+                           style="width: {{px2rpxWidth*100}}px;height:{{px2rpxWidth*100}}px ;"></image>
+                </view>
+                <view class="flex-center f19">
+                    线上订单审核
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {PX_TO_RPX} from '@/utils/constant';
+
+    // import ClassifyStore from '@/components/classifystore';
+
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '订单审核',
+        };
+        components = {
+            // classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+        };
+
+        computed = {};
+
+        methods = {
+            // 线下订单审核
+            freight(){
+                wx.navigateTo({
+                    url: '/pages/order/examineOrder'
+                })
+            },
+            // 线上审核
+            carriage(){
+                wx.navigateTo({
+                    url: '/pages/order/examineOrderOnline'
+                })
+            }
+        };
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+
+            this.$apply();
+            console.log(px2rpx);
+        }
+    }
+</script>
+<style lang="less">
+    .examine1 {
+        position: relative;
+        .examine11 {
+            position: absolute;
+            color: #ffffff;
+        }
+    }
+
+    .examine2 {
+        position: relative;
+        .examine22 {
+            position: absolute;
+            color: #ffffff;
+        }
+    }
+</style>

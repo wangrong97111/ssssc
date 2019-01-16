@@ -1,0 +1,698 @@
+<template>
+    <!--报销审核-->
+    <view class="examineOrder">
+        <view style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*110}}px;"></view>
+        <!--顶部全选及未审核条数-->
+        <view class="flex-center">
+            <view class="top flex-between f14"
+                  style="width:{{px2rpxWidth*690}}px;height:{{px2rpxHeight*97}}px;margin:{{px2rpxHeight*10}}px 0px;">
+                <view class="checkall flex-start" wx:if="{{NoData}}">
+                    <image src="../../static/image/empty.png" @tap="chooseAll()" wx:if="{{chooseNo}}"
+                           style="width:{{px2rpxWidth*32}}px;height:{{px2rpxWidth*32}}px;"></image>
+                    <image src="../../static/image/choose.png" @tap="chooseAllCancel()" wx:if="{{chooseAlready}}"
+                           style="width:{{px2rpxWidth*32}}px;height:{{px2rpxWidth*32}}px;"></image>
+                    全选
+                </view>
+                <view class="noline flex-end f14 red">未审核条数：{{len}}条</view>
+            </view>
+        </view>
+        <!--订单审核列表-->
+        <block wx:for="{{orderExamineList}}" wx:key="{{index}}">
+            <view class="listFirst">
+                <view class="flex-center">
+                    <view class="con f13"
+                          style="width:{{px2rpxWidth*690}}px;height:{{px2rpxHeight*670}}px;margin:{{px2rpxHeight*10}}px 0px;">
+                        <!--选择框-->
+                        <view class="choseb list flex-start f14"
+                              style="height:{{px2rpxHeight*50}}px;">
+                            <image src="../../static/image/choose.png"
+                                   data-index="{{index}}"
+                                   data-num="{{item.id}}" @tap="choose" wx:if="{{item.isCheck}}"
+                                   style="width:{{px2rpxWidth*32}}px;height:{{px2rpxWidth*32}}px;"></image>
+                            <image src="../../static/image/empty.png"
+                                   data-index="{{index}}"
+                                   data-num="{{item.id}}" @tap="empty" wx:else
+                                   style="width:{{px2rpxWidth*32}}px;height:{{px2rpxWidth*32}}px;"></image>
+                            <!--<view style="margin-left:{{px2rpxWidth*20}}px;">{{index+1}}</view>-->
+                        </view>
+                        <!--列表详情-->
+                        <view class="list flex-between f14"
+                              style="height:{{px2rpxHeight*63}}px;">
+                            <view class="flex-start">申请日期</view>
+                            <view class="noline flex-end f14">{{item.createTime}}</view>
+                        </view>
+                        <view class="list flex-between f14"
+                              style="height:{{px2rpxHeight*63}}px;">
+                            <view class="flex-start">所属部门</view>
+                            <view class="noline flex-end f14" wx:if="{{item.admin_job=='0'}}">
+                                业务员
+                            </view>
+                            <view class="noline flex-end f14" wx:if="{{item.admin_job=='1'}}">
+                                财务人员
+                            </view>
+                            <view class="noline flex-end f14" wx:if="{{item.admin_job=='2'}}">
+                                客服人员
+                            </view>
+                            <view class="noline flex-end f14" wx:if="{{item.admin_job=='3'}}">
+                                操作人员
+                            </view>
+                        </view>
+                        <view class="list flex-between f14"
+                              style="height:{{px2rpxHeight*63}}px;">
+                            <view class="flex-start">报销人</view>
+                            <view class="noline flex-end f14">{{item.admin_name}}</view>
+                        </view>
+                        <view class="list flex-between f14"
+                              style="height:{{px2rpxHeight*63}}px;">
+                            <view class="flex-start">报销金额(元)</view>
+                            <view class="noline flex-end f14">{{item.reimbursement_money}}</view>
+                        </view>
+                        <view class="list flex-between f14"
+                              style="height:{{px2rpxHeight*63}}px;">
+                            <view class="flex-start">报销单</view>
+                            <view class="noline flex-end f14 blue"
+                                  data-id="{{item.id}}" data-admin_name="{{item.admin_name}}" data-admin_job="{{item.admin_job}}"
+                                  @tap="seeOrderDetail">
+                                查看
+                            </view>
+                        </view>
+                        <view class="list flex-between f14"
+                              style="height:{{px2rpxHeight*63}}px;">
+                            <view class="flex-start">报销状态</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.reimbursement_flag=='0'}}">申请中</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.reimbursement_flag=='1'}}">同意</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.reimbursement_flag=='2'}}">驳回</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.reimbursement_flag=='3'}}">已打款</view>
+                        </view>
+                        <view class="list flex-between f14"
+                              style="height:{{px2rpxHeight*63}}px;">
+                            <view class="flex-start">审核状态</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.flag1=='1'}}">各职位创建报销单</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.flag1=='2'}}">财务待审核</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.flag1=='3'}}">管理员待审核</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.flag1=='4'}}">终审待审核</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.flag1=='5'}}">财务待打款</view>
+                            <view class="noline flex-end f14 red" wx:if="{{item.flag1=='6'}}">财务已打款</view>
+                        </view>
+                        <!--操作button-->
+                        <view class="listLast flex-between f14"
+                              style="height:{{px2rpxHeight*63}}px;">
+                            <button data-index="{{index}}" data-num="{{item.id}}" @tap="refuse"
+                                    class="f12  redbac white flex-center"
+                                    style="width:{{px2rpxWidth*197}}px;height:{{px2rpxHeight*63}}px;">
+                                拒绝
+                            </button>
+                            <button data-index="{{index}}" data-num="{{item.id}}" @tap="success"
+                                    class="f12 bluebac white flex-center"
+                                    style="width:{{px2rpxWidth*197}}px;height:{{px2rpxHeight*63}}px;">
+                                通过
+                            </button>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </block>
+        <view wx:if="{{viewAll}}">
+            <i-load-more tip="已经到底了" loading="{{false}}"/>
+        </view>
+
+        <!--底部空白-->
+        <view style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*160}}px;"></view>
+        <!--底部固定button-->
+        <view class="bottom flex-end" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*150}}px;"
+              wx:if="{{NoData}}">
+            <view class="bottomLeft flex-center">
+                <button class="f12 bluebac white flex-center" @tap="chooseSuccess()"
+                        style="width:{{px2rpxWidth*197}}px;height:{{px2rpxHeight*63}}px;">
+                    通过
+                </button>
+            </view>
+        </view>
+        <!--单个确认通过-->
+        <i-modal title="确认通过" visible="{{passview}}" actions="{{ actions3 }}" @tap="handleClick3"></i-modal>
+        <!--多个确认通过-->
+        <i-modal title="确认多个通过" visible="{{passAll}}" actions="{{ actions4 }}" @tap="handleClick4"></i-modal>
+        <!--拒绝原因-->
+        <view wx:if="{{refuseview}}">
+            <view class="mask" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*1537}}px;"></view>
+            <view class="bord"
+                  style="width:{{px2rpxWidth*579}}px;height:{{px2rpxHeight*522}}px;margin-top: {{px2rpxHeight*250}}px;margin-left:{{px2rpxWidth*87}}px; ">
+                <view class="bord-top felx-center blue f15" style="margin:{{px2rpxHeight*44}}px 0;">拒绝理由</view>
+                <view class="flex-center">
+                    <view class="textarea f14"
+                          style="width:{{px2rpxWidth*486}}px;height:{{px2rpxHeight*229}}px;margin-bottom: {{px2rpxHeight*50}}px;">
+                        <textarea placeholder="原因可为空" bindinput="bindTextAreaBlur2" auto-focus
+                                  style="width: 100%;height: 100%;"/>
+                    </view>
+                </view>
+                <view class="flex-between">
+                    <button @tap="refuseok" class="refusebtn1 flex-center bluebac white f13"
+                            style="width:{{px2rpxWidth*195}}px;height:{{px2rpxHeight*62}}px;">
+                        确认
+                    </button>
+                    <button @tap="refusecancel" class="refusebtn2 flex-center whitebac blue f13"
+                            style="width:{{px2rpxWidth*195}}px;height:{{px2rpxHeight*62}}px;">
+                        取消
+                    </button>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {PX_TO_RPX, USER_INFO} from '@/utils/constant';
+    import api from '@/utils/api';
+    // import ClassifyStore from '@/components/classifystore';
+    let page = 1;
+    let pageSize = 20;
+    let isLastPage = false;
+    let index = 0;
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '报销审核',
+            "usingComponents": {
+                "i-button": "../../iview/button/index",
+                "i-modal": "../../iview/modal/index",
+                "i-load-more": "../../iview/load-more/index"
+            }
+        };
+        components = {
+            // classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            chooseNo: true,      //全选为空
+            chooseAlready: false,        //全选选中
+            passview: false,     //确认通过
+            actions3: [
+                {
+                    name: '确认',
+                    color: '#2d8cf0',
+                },
+                {
+                    name: '取消',
+                    color: '#19be6b'
+                },
+            ],
+            passAll: false,     //全部确认通过
+            actions4: [
+                {
+                    name: '确认',
+                    color: '#2d8cf0',
+                },
+                {
+                    name: '取消',
+                    color: '#19be6b'
+                },
+            ],
+            refuseview: false,       //拒绝填写原因显示
+            refusecon: '',       //拒绝内容
+            //订单审核列表
+            orderExamineList: [],
+            //未审核条数
+            len: '',
+            //0条数据时
+            NoData: true,
+            //点击的订单编号
+            orderNum: '',
+            //用户Id
+            userId: '',
+            //绑定管理员Id
+            bangding_admin: '',
+            //登录用户身份
+            flagg: '',   //管理者职位 0超级管理员 1终审 2管理员 3业务员 4财务 5客服 6操作
+            //数据加载完毕
+            viewAll: false,
+        };
+
+        computed = {};
+
+        methods = {
+            //选择通过
+            chooseSuccess() {
+                //选中个数
+                let chose = 0;
+                for (let i = 0; i < this.len; i++) {
+                    if (this.orderExamineList[i].isCheck == true) {
+                        chose = chose + 1;
+                    }
+                }
+                console.log(chose)
+                if (chose == 0) {
+                    wx.showToast({
+                        title: '您还没有选择任何订单',
+                        icon: 'none',
+                        duration: 1000,
+                        mask: true
+                    })
+                } else {
+                    this.passAll = true;
+                }
+            },
+            async handleClick4(e) {
+                //选择通过确认
+                if (e._relatedInfo.anchorTargetText == '确认') {
+                    console.log('确认')
+                    for (let i = 0; i < this.len; i++) {
+                        if (this.orderExamineList[i].isCheck == true) {
+                            index = i;
+                            this.orderNum = this.orderExamineList[i].id;
+                            this.submit();
+                        }
+                    }
+                    //重新加载列表
+                    page = 1;
+                    this.orderExamineList = [];
+                    this.exameList();
+                    this.passAll = false;
+                } else if (e._relatedInfo.anchorTargetText == '取消') {
+                    //选择通过取消
+                    this.passAll = false;
+                }
+                this.$apply();
+            },
+            //点击全选
+            chooseAll() {
+                this.chooseNo = false;
+                this.chooseAlready = !this.chooseNo;
+                for (let i = 0; i < this.len; i++) {
+                    this.orderExamineList[i].isCheck = true;
+                }
+            },
+            //取消全选
+            chooseAllCancel() {
+                this.chooseAlready = false;
+                this.chooseNo = !this.chooseAlready;
+                for (let i = 0; i < this.len; i++) {
+                    this.orderExamineList[i].isCheck = false;
+                }
+            },
+            //点击列表
+            empty(e) {
+                // console.log(e.currentTarget.dataset.num)
+                console.log(e.currentTarget.dataset.index)
+                let inl = e.currentTarget.dataset.index;
+                console.log(this.orderExamineList)
+                console.log(inl)
+                this.orderExamineList[inl].isCheck = !this.orderExamineList[inl].isCheck;
+            },
+            //取消点击列表
+            choose(e) {
+                let inl = e.currentTarget.dataset.index;
+                this.orderExamineList[inl].isCheck = !this.orderExamineList[inl].isCheck;
+                this.chooseNo = true;
+                this.chooseAlready = !this.chooseNo;
+            },
+            //确认通过
+            success(e) {
+                index = e.currentTarget.dataset.index;
+                this.orderNum = e.currentTarget.dataset.num;
+                this.passview = true;
+                this.$apply();
+            },
+            async handleClick3(e) {
+                //单个通过确认
+                if (e._relatedInfo.anchorTargetText == '确认') {
+                    console.log('确认')
+                    //通过接口
+                    this.submit();
+                    this.passview = false;
+                } else if (e._relatedInfo.anchorTargetText == '取消') {
+                    //单个通过取消
+                    this.passview = false;
+                }
+                this.$apply();
+            },
+            //拒绝
+            refuse(e) {
+                this.orderNum = e.currentTarget.dataset.num;
+                index = e.currentTarget.dataset.index;
+                this.refuseview = true;
+                this.$apply();
+            },
+            //拒绝输入框内容
+            bindTextAreaBlur2: function (e) {
+                this.refusecon = e.detail.value;
+                this.$apply();
+            },
+            //拒绝确认
+            async refuseok() {
+                //终审
+                if (this.flagg == '1') {
+                    let that = this;
+                    let rlt = await api.reasonListKe({
+                        query: {
+                            comment: that.refusecon,     //驳回内容
+                            id: that.orderNum,    //订单编号
+                            workerId: that.userId,      //userId
+                            adminID: that.bangding_admin,      //绑定管理员id
+                        }
+                    });
+                    if (rlt.data.state == 1) {
+                        //拒绝成功
+                        wx.showToast({
+                            title: '拒绝成功',
+                            icon: 'none',
+                            duration: 1000,
+                            mask: true
+                        })
+                        this.refuseview = false;
+                        this.orderExamineList.splice(index, 1);
+                        this.len = this.len - 1;
+                    } else {
+                        // 拒绝失败rlt.data.message
+                        wx.showToast({
+                            title: rlt.data.message,
+                            icon: 'none',
+                            duration: 1000,
+                            mask: true
+                        })
+                    }
+                }
+                //管理员
+                if (this.flagg == '2') {
+                    let that = this;
+                    let rlt = await api.reasonListKe({
+                        query: {
+                            id: that.orderNum,    //
+                        }
+                    });
+                    if (rlt.data.state == 1) {
+                        //拒绝成功
+                        wx.showToast({
+                            title: '拒绝成功',
+                            icon: 'none',
+                            duration: 1000,
+                            mask: true
+                        })
+                        this.refuseview = false;
+                        this.orderExamineList.splice(index, 1);
+                        this.len = this.len - 1;
+                    } else {
+                        // 拒绝失败rlt.data.message
+                        wx.showToast({
+                            title: rlt.data.message,
+                            icon: 'none',
+                            duration: 1000,
+                            mask: true
+                        })
+                    }
+                }
+                this.$apply();
+            },
+            //拒绝取消
+            refusecancel() {
+                this.refusecon = '';
+                this.refuseview = false;
+                this.$apply();
+            },
+            //点击查看报销详情
+            seeOrderDetail(e) {
+                let id = e.currentTarget.dataset.id;
+                let admin_name = e.currentTarget.dataset.admin_name;
+                let admin_job = e.currentTarget.dataset.admin_job;
+                wx.navigateTo({
+                url: '/pages/order/examineAccountExpense?id='+id+"&admin_name="+admin_name+"&admin_job="+admin_job
+                // url: '/pages/order/examineAccountExpense?orderNum=' + e.currentTarget.dataset.num
+                })
+            }
+        };
+
+        //通过接口
+        async submit() {
+            //终审
+            if (this.flagg == '1') {
+                let that = this;
+                let rlt = await api.passBaoXiaoKe({
+                    query: {
+                        id: that.orderNum,    //订单编号
+                        // adminID: that.bangding_admin,      //绑定管理员id
+                        flag: '5',
+                        flag1: '1',
+                    }
+                });
+                if (rlt.data.state == 1) {
+                    //通过成功
+                    wx.showToast({
+                        title: '通过成功',
+                        icon: 'none',
+                        duration: 1000,
+                        mask: true
+                    })
+                    this.passview = false;
+                    //重新加载列表
+                    this.orderExamineList.splice(index, 1);
+                    this.len = this.len - 1;
+                } else {
+                    // 通过失败rlt.data.message
+                    wx.showToast({
+                        title: rlt.data.message,
+                        icon: 'none',
+                        duration: 1000,
+                        mask: true
+                    })
+                }
+            }
+            //管理员
+            if (this.flagg == '2') {
+                let that = this;
+                let rlt = await api.passBaoXiaoKe({
+                    query: {
+                        id: that.orderNum,    //订单编号
+                        // adminID: that.bangding_admin,      //绑定管理员id
+                        flag: '4',
+                        flag1: '0',
+                    }
+                });
+                if (rlt.data.state == 1) {
+                    //通过成功
+                    wx.showToast({
+                        title: '通过成功',
+                        icon: 'none',
+                        duration: 1000,
+                        mask: true
+                    })
+                    this.passview = false;
+                    //重新加载列表
+                    this.orderExamineList.splice(index, 1);
+                    this.len = this.len - 1;
+                } else {
+                    // 通过失败rlt.data.message
+                    wx.showToast({
+                        title: rlt.data.message,
+                        icon: 'none',
+                        duration: 1000,
+                        mask: true
+                    })
+                }
+            }
+            this.$apply();
+        };
+
+        events = {};
+
+        async exameList() {
+            console.log(this.flagg)
+            //订单待审核列表
+            //终审
+            if (this.flagg == '1') {
+                let that = this;
+                let rlt = await api.selectBaoXiaoListKe({
+                    query: {
+                        adminId: that.bangding_admin,        //绑定管理员ID
+                        page: page,
+                        pageSize: pageSize,
+                        flag1: '0',
+                        flag2: '4',
+                        flag3: '0',
+                        // workerId: that.userId,
+                    }
+                });
+                isLastPage = rlt.data.data.PageInfo.isLastPage
+                this.orderExamineList = this.orderExamineList.concat(rlt.data.data.PageInfo.list);
+                //forEach进去isCheck
+                this.orderExamineList.forEach((item) => {
+                    item.isCheck = false;
+                });
+                console.log(this.orderExamineList)
+                this.len = rlt.data.data.PageInfo.total;
+                //无数据时的底部不显示
+                if (this.len == 0) {
+                    this.NoData = false;
+                }
+            }
+            //管理员
+            if (this.flagg == '2') {
+                let that = this;
+                let rlt = await api.selectBaoXiaoListKe({
+                    query: {
+                        adminId: that.userId,        //管理员本身ID
+                        page: page,
+                        pageSize: pageSize,
+                        flag1: '0',
+                        flag2: '3',
+                        flag3: '0',
+                        // workerId: that.userId,
+                    }
+                });
+                isLastPage = rlt.data.data.PageInfo.isLastPage
+                this.orderExamineList = this.orderExamineList.concat(rlt.data.data.PageInfo.list);
+                //forEach进去isCheck
+                this.orderExamineList.forEach((item) => {
+                    item.isCheck = false;
+                });
+                console.log(this.orderExamineList)
+                this.len = rlt.data.data.PageInfo.total;
+                //无数据时的底部不显示
+                if (this.len == 0) {
+                    this.NoData = false;
+                }
+            }
+            this.$apply();
+        };
+
+        /**
+         * 页面上拉触底事件的处理函数
+         */
+        onReachBottom() {
+            if (isLastPage) {
+                this.viewAll = true;
+                wepy.showToast({
+                    title: '没有更多数据了',
+                    icon: 'none',
+                    mask: true,
+                    duration: 1000
+                })
+            } else {
+                wx.showLoading({
+                    title: '努力加载中',
+                });
+                page++;
+                this.exameList();
+            }
+        };
+
+        /**
+         * 页面下拉请求数据更新
+         */
+
+        /*onPullDownRefresh() {
+            // wx.showLoading({
+            //     title: '努力加载中',
+            // });
+            console.log('下拉刷新列表')
+            page=1;
+            this.orderExamineList=[];
+            this.exameList();
+             setTimeout(function () {
+                 // 不加这个方法真机下拉会一直处于刷新状态，无法复位
+                 wepy.stopPullDownRefresh()
+             }, 5000)
+        };
+*/
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            //取缓存
+            let userInfo = wepy.getStorageSync(USER_INFO);
+            this.bangding_admin = userInfo.bangding_admin;      //绑定管理员id
+            this.userId = userInfo.id;      //登录用户id
+            this.flagg = userInfo.admin_job_flag;     //身份识别 1.终审 2.管理员
+            //加载未订单审核列表
+            this.exameList();
+            this.$apply();
+        }
+    }
+</script>
+<style lang="less">
+    page {
+        background-color: #f1f1f1;
+        .examineOrder {
+            .top {
+                background-color: #ffffff;
+                border-radius: 5px;
+                box-sizing: border-box;
+                padding: 0 25rpx;
+                position: fixed;
+                top: 0;
+                z-index: 999;
+            }
+            .noline {
+                width: 60%;
+            }
+            .checkall {
+                width: 40%;
+                image {
+                    margin-right: 23rpx;
+                }
+            }
+            .list {
+                /* background-color: #ffffff;
+                 border-radius: 5px;
+                 box-sizing: border-box;*/
+                /*padding: 0 2rpx;*/
+                /*margin-bottom: 10px;*/
+            }
+            .listLast {
+                margin: 15rpx 0;
+            }
+            .choseb {
+                margin-top: 20rpx;
+            }
+            .con {
+                background-color: #ffffff;
+                border-radius: 5px;
+                box-sizing: border-box;
+                padding: 0 25rpx;
+            }
+            /*底部定位*/
+            .bottom {
+                /*background-color: #F1F1F1;*/
+                background-color: rgba(241, 241, 241, 0.8);
+                position: fixed;
+                bottom: 0;
+                .bottomLeft {
+                    width: 50%;
+                }
+                .bottomRight {
+                    width: 50%;
+                }
+            }
+            /*列表*/
+
+            /*遮罩层*/
+            .mask {
+                position: fixed;
+                top: 0rpx;
+                background-color: #000;
+                opacity: 0.55;
+                z-index: 2001;
+
+            }
+            .bord {
+                position: fixed;
+                top: 0rpx;
+                background-color: #ffffff;
+                z-index: 2002;
+                border-radius: 5px;
+                .bord-top {
+                    text-align: center;
+                }
+                .textarea {
+                    box-sizing: border-box;
+                    padding: 10rpx;
+                    border: 1px solid rgba(153, 153, 153, 1);
+                }
+                .refusebtn2 {
+                    border: 1px solid rgba(1, 65, 155, 1);
+
+                }
+            }
+        }
+    }
+</style>

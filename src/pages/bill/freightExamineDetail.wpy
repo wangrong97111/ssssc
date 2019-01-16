@@ -1,0 +1,253 @@
+<template>
+    <view class="examineDetail">
+        <view class="bz flex-between bluebac white f15"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+           账单详情
+        </view>
+        <!--<view class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px;">-->
+            <!--<view class="line flex-between"-->
+                  <!--style="height:{{px2rpxHeight*82}}px;">-->
+                <!--<view class="flex-start">用户名</view>-->
+                <!--<view class="noline flex-end">传清科技</view>-->
+            <!--</view>-->
+            <!--<view class="line flex-between"-->
+                  <!--style="height:{{px2rpxHeight*82}}px;">-->
+                <!--<view class="flex-start">联系电话</view>-->
+                <!--<view class="noline flex-end">123456789</view>-->
+            <!--</view>-->
+            <!--<view class="line flex-between"-->
+                  <!--style="height:{{px2rpxHeight*82}}px;">-->
+                <!--<view class="flex-start">公司名称</view>-->
+                <!--<view class="noline flex-end">传情科技</view>-->
+            <!--</view>-->
+            <!--<view class="line flex-between"-->
+                  <!--style="height:{{px2rpxHeight*82}}px;">-->
+                <!--<view class="flex-start">电话号码</view>-->
+                <!--<view class="noline flex-end">123456789</view>-->
+            <!--</view>-->
+            <!--<view class="line flex-between"-->
+                  <!--style="height:{{px2rpxHeight*82}}px;">-->
+                <!--<view class="flex-start">公司地址</view>-->
+                <!--<view class="noline flex-end">融汇大厦808</view>-->
+            <!--</view>-->
+            <!--<view style="height:{{px2rpxHeight*110}}px;">-->
+                <!--<view class="flex-between" style="height:{{px2rpxHeight*70}}px;">-->
+                    <!--<view class="flex-start">日期</view>-->
+                    <!--<view class="noline flex-end">2018.6.12-2018.7.12</view>-->
+                <!--</view>-->
+               <!--<view class="red f12" style="height:{{px2rpxHeight*40}}px;">-->
+                   <!--*以运输完成日期为起始日期-->
+               <!--</view>-->
+            <!--</view>-->
+        <!--</view>-->
+        <view class="bz flex-between bluebac white f15"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*67}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*6}}px;">
+           订单列表
+        </view>
+        <view wx:if="{{noMsg}}" class="f16 flex-center" style="padding-top: {{px2rpxHeight*100}}px;padding-bottom:{{px2rpxHeight*100}}px;">
+            暂无任何订单
+        </view>
+        <block wx:for="{{orderLi}}"  wx:key="{{index}}">
+            <view class="searchdetail whitebac f13" style="width:{{px2rpxWidth*748}}px;padding:0 {{px2rpxHeight*30}}px; margin-bottom:{{px2rpxHeight*10}}px; ">
+                <view class="line flex-start"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="title flex-start blue f14">序号-{{index+1}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">船名/航次</view>
+                    <view class="noline flex-end">{{item.ship_name}}/{{item.ship_num}}</view>
+                </view>
+               <!-- <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">招待费/元</view>
+                    <view class="noline flex-end"></view>
+                </view>-->
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">船东</view>
+                    <view class="noline flex-end">{{item.ship_east}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">订单号</view>
+                    <view class="noline flex-end">{{item.order_num}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">订舱时间</view>
+                    <view class="noline flex-end">{{item.createTime}}</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">订单详情</view>
+                    <view class="noline flex-end blue" data-num="{{item.order_num}}"  @tap="seeOrderDetail">查看</view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">运输完成时间</view>
+                    <view class="noline flex-end"></view>
+                </view>
+                <view class="line flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">海运费/元</view>
+                    <view class="noline flex-end">{{item.money1}}</view>
+                </view>
+                <view class="flex-between"
+                      style="height:{{px2rpxHeight*82}}px;">
+                    <view class="flex-start">额外费用</view>
+                    <view class="noline flex-end blue" data-num="{{item.order_num}}"  @tap="seePay">查看</view>
+                </view>
+            </view>
+        </block>
+
+        <!--底部合计-->
+        <view class="bz flex-between whitebac"  style="width:{{px2rpxWidth*748}}px;height:{{px2rpxHeight*85}}px;margin-top: {{px2rpxHeight*8}}px;margin-bottom: {{px2rpxHeight*20}}px;">
+            <view class="title red f15"> 合计</view>
+            <view class="f13">{{total}}元</view>
+        </view>
+    </view>
+</template>
+
+<script>
+    let page =1;
+    let pageSize =20;
+    let isLastPage=0;
+    import wepy from 'wepy';
+    import api from '@/utils/api';
+    import {PX_TO_RPX, USER_INFO} from '@/utils/constant';
+    
+    //import ClassifyStore from '@/components/classifystore';
+
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '账单详情',
+        };
+        components = {
+            //classifystore: ClassifyStore
+        };
+
+        data = {
+            noMsg:false,
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            orderLi:[],
+            total:0,
+        };
+
+        computed = {};
+
+        methods = {
+            //订单详情查看
+            seeOrderDetail(e){
+                wx.navigateTo({
+                    url: '/pages/order/examineOrderDetail?orderNum=' + e.currentTarget.dataset.num
+                })
+            },
+            //额外费用查看
+            seePay(e){
+                wx.navigateTo({
+                    url: '/pages/order/outPay?orderNum=' + e.currentTarget.dataset.num
+                })
+            },
+        };
+        /**
+         * 页面上拉触底事件的处理函数
+         */
+        onReachBottom () {
+            /*if(isLastPage){
+                // this.viewAll =true;
+                wepy.showToast({
+                    title: '没有更多数据了',
+                    icon: 'none',
+                    mask: true,
+                    duration: 1000
+                })
+            }else{
+                wx.showLoading({
+                    title: '努力加载中',
+                });
+                page++;
+                this.orderDetail();
+            }*/
+        };
+
+        events = {};
+          // ','截取成数组
+          judge(data){
+            // console.log(data);
+            let a =[];
+            let Str = data;
+            a = Str.split(',');
+            if (a.length>1) {
+              // return true;
+              return data.split(',');
+            }else{
+              return  false;
+            }
+          };
+        async orderDetail(options){
+            let rlt = await api.selectOverOrderList({
+                query: {
+                    num:options.billNum,  //账单编号
+                    page:page,
+                    pageSize:pageSize,
+                }
+            });
+            isLastPage = rlt.data.data.PageInfo.isLastPage;
+            console.log(rlt.data.data.PageInfo)
+          if(rlt.data.data.PageInfo.list){
+            this.orderLi =rlt.data.data.PageInfo.list;
+            //forEach进去money1
+            this.orderLi.forEach((item) => {
+              item.money1='';
+            });
+            let lang =this.orderLi.length;
+            for(let i=0;i<lang;i++){
+              let a=this.judge(this.orderLi[i].transport_fee_money)
+              this.orderLi[i].money1=a[0];
+              this.total=Number(this.orderLi[i].money1)+this.total;
+            }
+
+          }
+          if(rlt.data.data.PageInfo.total<1){
+            this.noMsg=true;
+          }
+            this.$apply();
+        };
+
+        async onLoad(options) {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            console.log(options)
+            //依据订单编号查看订单
+            this.orderDetail(options)    //账单详情
+            this.$apply();
+            console.log(px2rpx);
+        }
+    }
+</script>
+<style lang="less">
+    page{
+        background:rgba(241,241,241,1);
+    }
+    .examineDetail{
+        color:rgba(51,51,51,1);
+        .bz{
+            box-sizing: border-box;
+            padding: 30rpx;
+        }
+        .searchdetail{
+            box-sizing: border-box;
+            border-radius: 5px;
+            .noline {
+                /*width: 60%;*/
+            }
+            .line{
+                border-bottom: 1px solid #FFF2F2F2;
+            }
+        }
+        .title{
+            font-weight: bold;
+        }
+    }
+</style>

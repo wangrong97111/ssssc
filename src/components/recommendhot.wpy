@@ -1,0 +1,126 @@
+<template>
+    <view class="recommendhot">
+        <!--<block wx:for="{{shop}}" wx:for-item="shop" wx:key="{{shop.shopId}}">-->
+        <view class='content_list' style="height:{{px2rpxHeight*200}}px;">
+            <view class='content_l'>
+                <image src='../../static/image/1.jpg' style="width:{{px2rpxWidth*200}}px;height:{{px2rpxWidth*200}}px;"/>
+            </view>
+            <view class='content_r f13 flex-column-start'>
+                <view class='shop_name f15'>shopname</view>
+                <view class='shop_money'>
+                    <view class='money'>起送¥30</view>
+                    <view class='money'>人均¥30</view>
+                    <view class='money'>配送费¥3</view>
+                </view>
+                <view class='shop_quan'>
+                    <image src='../../static/image/jian.png'
+                           style="width:{{px2rpxWidth*40}}px;height:{{px2rpxWidth*40}}px;"></image>
+                    <view style='width:500rpx;'>
+                        满30减10
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class='content_list' style="height:{{px2rpxHeight*200}}px;">
+            <view class='content_l'>
+                <image src='../../static/image/1.jpg' style="width:{{px2rpxWidth*200}}px;height:{{px2rpxWidth*200}}px;"/>
+            </view>
+            <view class='content_r f13 flex-column-start'>
+                <view class='shop_name f15'>shopname</view>
+                <view class='shop_money'>
+                    <view class='money'>起送¥30</view>
+                    <view class='money'>人均¥30</view>
+                    <view class='money'>配送费¥3</view>
+                </view>
+                <view class='shop_quan'>
+                    <image src='../../static/image/jian.png'
+                           style="width:{{px2rpxWidth*40}}px;height:{{px2rpxWidth*40}}px;"></image>
+                    <view style='width:500rpx;'>
+                        满30减10
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <!--</block>-->
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {
+        PX_TO_RPX
+    } from '@/utils/constant';
+
+
+    export default class RecommendHot extends wepy.component {
+        config = {
+            navigationBarTitleText: ''
+        };
+        components = {};
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: ''
+        };
+
+        computed = {};
+
+        methods = {};
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            this.$apply();
+
+        }
+
+    }
+</script>
+<style lang="less">
+    .content_list {
+        width: 100%;
+        padding: 20rpx;
+        display: flex;
+        border-bottom: 1rpx solid #f1f1f1;
+    }
+
+    .content_l {
+        width: 30%;
+    }
+
+    .content_r {
+        width: 70%;
+        padding-left: 30rpx;
+        color: #333;
+        padding-top: 20rpx;
+    }
+
+    .shop_name {
+        font-weight: bold;
+        height: 50rpx;
+    }
+
+    .shop_money {
+        display: flex;
+        height: 30rpx;
+        line-height: 30rpx;
+        margin: 10rpx 0;
+    }
+
+    .money {
+        border-left: 1px solid #ccc;
+        padding-left: 20rpx;
+        margin-right: 30rpx;
+    }
+
+    .shop_quan {
+        display: flex;
+        margin-top: 15rpx;
+        width: 90%;
+    }
+</style>

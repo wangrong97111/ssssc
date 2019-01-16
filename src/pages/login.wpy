@@ -1,0 +1,182 @@
+<template>
+    <!--登录-->
+    <view class="login">
+        <view style="padding-top:{{px2rpxHeight*234}}px;">
+            <form bindsubmit="formSubmit">
+                <view class="flex-center">
+                    <input class="setInput f13" name="account" placeholder="请输入账号" auto-focus></input>
+                </view>
+                <view class="flex-center">
+                    <input class="setInput f13" name="passWord" placeholder="请输入密码" password></input>
+                </view>
+                <view>
+                    <button class="logindl f13 blue" formType="submit">登录</button>
+                </view>
+            </form>
+        </view>
+        </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import api from '@/utils/api';
+    import {PX_TO_RPX, USER_INFO, USER_PASSWORD} from '@/utils/constant';
+    // import ClassifyStore from '@/components/classifystore';
+
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: 'SSC超级供应链联盟',
+        };
+        components = {
+            // classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+
+        };
+
+        computed = {};
+
+        methods = {
+            async formSubmit(e) {
+                // console.log(e.detail.value)
+                let that = this;
+                let rlt = await api.adminLogin({
+                    query: {
+                        account: e.detail.value.account,
+                        passWord: e.detail.value.passWord,
+                    }
+                });
+                console.log(rlt)
+                if (rlt.data.state == 1) {
+                    let a = rlt.data.data.admin_job_flag;
+                    // 管理者职位 0超级管理员 1终审 2管理员 3业务员 4财务 5客服 6操作
+                    if (a == 1 || a == 2) {
+                        //存缓存————个人信息
+                        wepy.setStorageSync(USER_INFO, rlt.data.data)
+                        //存缓存————账号密码
+                        wepy.setStorageSync(USER_PASSWORD, e.detail.value.passWord)
+                        //跳转首页
+                        wx.redirectTo({
+                            url: './index'
+                        })
+                        //登录成功
+                        wx.showToast({
+                            title: '登录成功',
+                            icon: 'none',
+                            duration: 1000,
+                            mask: true
+                        })
+                    } else {
+                        wx.showToast({
+                            title: '您暂时没有权限',
+                            icon: 'none',
+                            duration: 1000,
+                            mask: true
+                        })
+                    }
+                } else {
+                    // 登录失败rlt.data.message
+                    wx.showToast({
+                        title: rlt.data.message,
+                        icon: 'none',
+                        duration: 1000,
+                        mask: true
+                    })
+                }
+            },
+            //input框
+            bindKeyInput: function (e) {
+                console.log(e)
+                this.setData({
+                    inputValue: e.detail.value
+                })
+            },
+            //登录
+            login() {
+                console.log()
+                //  跳转无返回
+                wx.redirectTo({
+                    url: './index'
+                })
+
+                //跳转带返回
+                /* wx.navigateTo({
+                     url: './index'
+                 })*/
+            }
+
+        };
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            //取缓存
+            let userInfo = wepy.getStorageSync(USER_INFO)
+            let userPassword = wepy.getStorageSync(USER_PASSWORD)
+            // console.log(userInfo)
+            // console.log(userPassword)
+            //检验账号密码是否正确自动登陆
+            if (userInfo) {
+                let rlt = await api.adminLogin({
+                    query: {
+                        account: userInfo.admin_account,
+                        passWord: userPassword,
+                    }
+                });
+                if (rlt.data.state == 1) {
+                    wx.redirectTo({
+                        url: '/pages/index'
+                    })
+                    //登录成功
+                    wx.showToast({
+                        title: '登录成功',
+                        icon: 'none',
+                        duration: 1000,
+                        mask: true
+                    })
+
+                } else {
+                    // 登录失败rlt.data.message
+                    wx.showToast({
+                        title: rlt.data.message,
+                        icon: 'none',
+                        duration: 1000,
+                        mask: true
+                    })
+                }
+
+            }
+            this.$apply();
+        }
+    }
+</script>
+<style lang="less">
+    page{
+        background-image:url(https://zuoanzac.oss-cn-beijing.aliyuncs.com/201811151634462360.png); background-repeat:no-repeat; background-size:100% 100%;-moz-background-size:100% 100%;
+    }
+    .login{
+        .img{
+            width: 100%;
+            height: 100%;
+        }
+        .setInput{
+            border-bottom: 1rpx solid #FFFFFF;
+            width: 460rpx;
+            height: 80rpx;
+            color: #FFFFFF;
+            margin-bottom: 40rpx;
+        }
+        .logindl{
+            width: 460rpx;
+            height: 77rpx;
+            border-radius: 50px;
+            margin-top: 80rpx;
+        }
+    }
+</style>

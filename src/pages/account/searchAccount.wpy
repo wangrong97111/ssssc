@@ -1,0 +1,128 @@
+<template>
+    <!--报销查询-->
+    <view class="search whitebac" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*366}}px;">
+        <view class=" flex-center" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*195}}px;">
+            <view class="searchtop" style="width:{{px2rpxWidth*700}}px;height:{{px2rpxHeight*195}}px;">
+                <view class="flex-between f13" style="margin-top: {{px2rpxHeight*30}}px;">
+                    <view class="searchtit">报销日期</view>
+                    <view class="searchcon">
+                        <picker mode="date" value="{{date}}" start="1990-09-01" end="2028-09-01"
+                                bindchange="bindDateChange">
+                            <input type="text" value="{{date}}" placeholder="请选择日期"></input>
+                        </picker>
+                        <image src="../../static/image/list.png" class="botlist"
+                               style="width: {{px2rpxHeight*40}}rpx;height:{{px2rpxHeight*30}}rpx;top:  {{px2rpxHeight*40}}rpx;right: {{px2rpxWidth*40}}rpx;"></image>
+                    </view>
+                </view>
+                <view class="flex-between f13" style="margin-top: {{px2rpxHeight*30}}px;">
+                    <view class="searchTit">报销状态</view>
+                    <view class="searchcon">
+                        <picker range="{{supplier}}" bindchange="Stypes">
+                            <input type="text" value="{{Stypes}}" placeholder="请选择"></input>
+                        </picker>
+                        <image src="../../static/image/list.png" class="botlist"
+                               style="width: {{px2rpxHeight*40}}rpx;height:{{px2rpxHeight*30}}rpx;top:{{px2rpxHeight*40}}rpx;right: {{px2rpxWidth*40}}rpx;"></image>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="flex-center" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*170}}px;">
+            <button @tap="search" class="f13 bluebac white flex-center"
+                    style="width:{{px2rpxWidth*557}}px;height:{{px2rpxHeight*80}}px;">
+                搜索
+            </button>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {PX_TO_RPX} from '@/utils/constant';
+
+    //import ClassifyStore from '@/components/classifystore';
+
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '报销查询',
+        };
+        components = {
+            //classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            date: '',//订舱日期
+            supplier: ['申请中', '同意', '驳回', '已打款'],//供应商类型
+            Stypes: '',
+            Stypes2: '',
+        };
+
+        computed = {};
+
+        methods = {
+            //申请日期
+            bindDateChange: function (e) {
+                console.log(e.detail.value)
+                this.date = e.detail.value;
+                this.$apply();
+            },
+            //  报销
+            Stypes(e) {
+                console.log(e.detail.value)
+                let index = e.detail.value;
+                this.Stypes2 = e.detail.value;
+                this.Stypes = this.supplier[index];
+                this.$apply();
+            },
+            //搜索
+            search() {
+                console.log(this.date, this.Stypes2)
+                //    跳转搜索详情页
+                wx.navigateTo({
+                    url: '/pages/account/searchAccountDetail?date=' + this.date + "&Stypes2=" + this.Stypes2
+                })
+
+                // url: '/pages/order/searchOrderDetail?shipName='+this.shipName+"&startDay="+this.startDay+"&endDay="+this.endDay
+                // options
+                // url: '/pages/order/searchOrderDetail?orderObj='+JSON.stringify(rlt.data.data.PageInfo.list)
+                // this.orderObj= JSON.parse(options.orderObj);//解析得到对象
+            },
+        };
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+
+            this.$apply();
+        }
+    }
+</script>
+<style lang="less">
+    page{
+        background:rgba(241,241,241,1);
+    }
+    .search{
+        .searchtop{
+            color:rgba(51,51,51,1);
+            border-bottom: 2rpx solid #FFF1F1F1;
+            .searchtit{
+                width: 30%;
+            }
+            .searchcon{
+                box-sizing: border-box;
+                padding-left: 30rpx;
+                width: 70%;
+                border-radius: 5px;
+                border:1px solid rgba(153,153,153,1);
+                position: relative;
+                .botlist{
+                    position: absolute;
+                }
+            }
+        }
+    }
+</style>

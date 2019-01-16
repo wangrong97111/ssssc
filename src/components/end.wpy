@@ -1,0 +1,52 @@
+<template>
+    <view class="end flex-between" style="height:{{px2rpxHeight*85}}px;">
+        <view class="line" style="width:{{px2rpxWidth*220}}px;height:{{px2rpxHeight*1}}px;"></view>
+        <view class="f12">不要扯了，已经到底了</view>
+        <view class="line" style="width:{{px2rpxWidth*220}}px;height:{{px2rpxHeight*1}}px;"></view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {
+        PX_TO_RPX
+    } from '@/utils/constant';
+
+
+    export default class End extends wepy.component {
+        config = {
+            navigationBarTitleText: ''
+        };
+        components = {};
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+        };
+
+        computed = {};
+
+        methods = {};
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            this.$apply();
+
+        }
+
+    }
+</script>
+<style lang="less">
+    .end{
+        width: 100%;
+        background: #f0f0f0;
+        color: #b4b4b4;
+        .line{
+            background-color: #b4b4b4;
+        }
+    }
+</style>

@@ -1,0 +1,281 @@
+<template>
+    <view class="index" style="width:{{px2rpxWidth*750}}px;height:{{px2rpxHeight*1200}}px;">
+        <view class="ftop flex-between f13">
+            <view class="ftopl flex-start">
+                <image src="../static/image/user.png"  style="width:{{px2rpxWidth*29}}px;height:{{px2rpxWidth*29}}px;"></image>
+                <view class="flex-start">欢迎你，<view style="margin-right:{{px2rpxWidth*10}}px; ">{{flagg}}</view><view>{{num}}</view></view>
+            </view>
+            <view class="ftopr flex-end" @tap="exit">退出</view>
+        </view>
+        <view class="flex-center">
+            <view class="indextop"
+                  style="width:{{px2rpxWidth*690}}px;height:{{px2rpxHeight*437}}px;margin-top:{{px2rpxHeight*23}}px;">
+                <view class="index-title flex-start"
+                      style="width:{{px2rpxWidth*640}}px;height:{{px2rpxHeight*90}}px;">
+                        <image src="../static/image/check.png"  style="width:{{px2rpxWidth*29}}px;height:{{px2rpxWidth*29}}px;"></image>
+                    <view class="check blue f16">
+                        审核
+                    </view>
+                </view>
+                <view class="index-title flex-center"
+                      style="width:{{px2rpxWidth*640}}px;height:{{px2rpxHeight*170}}px;">
+                    <view class="con-left line-right" @tap="orderExamintion()">
+                        <view clss="flex-center">
+                            <view class="tabc flex-center">
+                                <image src="../static/image/order.png"  style="width:{{px2rpxWidth*42}}px;height:{{px2rpxWidth*47}}px;"></image>
+                            </view>
+                        </view>
+                        <view class="flex-center f13">
+                            订单审核
+                        </view>
+                    </view>
+                    <view class="con-left" @tap="billExamintion()">
+                        <view clss="flex-center">
+                            <view class="tabc flex-center">
+                                <image src="../static/image/bill.png"  style="width:{{px2rpxWidth*42}}px;height:{{px2rpxWidth*47}}px;"></image>
+                            </view>
+                        </view>
+                        <view class="flex-center f13">
+                            账单审核
+                        </view>
+                    </view>
+                </view>
+                <view class="index-title2 flex-center"
+                      style="width:{{px2rpxWidth*640}}px;height:{{px2rpxHeight*170}}px;">
+                    <view class="con-left line-right"  @tap="accountExamintion()">
+                        <view clss="flex-center">
+                            <view class="tabc flex-center">
+                                <image src="../static/image/account.png"  style="width:{{px2rpxWidth*42}}px;height:{{px2rpxWidth*47}}px;"></image>
+                            </view>
+                        </view>
+                        <view class="flex-center f13">
+                            报销审核
+                        </view>
+                    </view>
+                    <view class="con-left">
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="flex-center">
+            <view class="indextop"
+                  style="width:{{px2rpxWidth*690}}px;height:{{px2rpxHeight*437}}px;margin-top:{{px2rpxHeight*43}}px; ">
+                <view class="index-title flex-start box"
+                      style="width:{{px2rpxWidth*640}}px;height:{{px2rpxHeight*90}}px;">
+                    <view>
+                        <image src="../static/image/search.png"  style="width:{{px2rpxWidth*29}}px;height:{{px2rpxWidth*29}}px;"></image>
+                    </view>
+                    <view class="check blue f16">
+                        历史记录查询
+                    </view>
+                </view>
+                <view class="index-title flex-center"
+                      style="width:{{px2rpxWidth*640}}px;height:{{px2rpxHeight*170}}px;">
+                    <view class="con-left line-right" @tap="orderSearching">
+                        <view clss="flex-center">
+                            <view class="tabc flex-center">
+                                <image src="../static/image/order.png"  style="width:{{px2rpxWidth*42}}px;height:{{px2rpxWidth*47}}px;"></image>
+                            </view>
+                        </view>
+                        <view class="flex-center f13">
+                            订单查询
+                        </view>
+                    </view>
+                    <view class="con-left" @tap="billSearching">
+                        <view clss="flex-center">
+                            <view class="tabc flex-center">
+                                <image src="../static/image/bill.png"  style="width:{{px2rpxWidth*42}}px;height:{{px2rpxWidth*47}}px;"></image>
+                            </view>
+                        </view>
+                        <view class="flex-center f13">
+                            账单查询
+                        </view>
+                    </view>
+                </view>
+                <view class="index-title2 flex-center"
+                      style="width:{{px2rpxWidth*640}}px;height:{{px2rpxHeight*170}}px;">
+                    <view class="con-left line-right" @tap="accountSearching">
+                        <view clss="flex-center">
+                            <view class="tabc flex-center">
+                                <image src="../static/image/account.png"  style="width:{{px2rpxWidth*42}}px;height:{{px2rpxWidth*47}}px;"></image>
+                            </view>
+                        </view>
+                        <view class="flex-center f13">
+                            报销查询
+                        </view>
+                    </view>
+                    <view class="con-left">
+                    </view>
+                </view>
+            </view>
+        </view>
+        <!--确认通过-->
+        <i-modal title="确认退出" visible="{{passview}}" actions="{{ actions3 }}" @tap="handleClick3" ></i-modal>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {PX_TO_RPX,USER_INFO,USER_PASSWORD} from '@/utils/constant';
+
+    // import ClassifyStore from '@/components/classifystore';
+
+    export default class Home extends wepy.page {
+        config = {
+            // navigationBarTitleText: '',
+            "usingComponents": {
+                "i-button": "../../iview/button/index",
+                "i-modal": "../../iview/modal/index"
+            }
+        };
+        components = {
+            // classifystore: ClassifyStore
+        };
+
+        data = {
+            px2rpxWidth: '',
+            px2rpxHeight: '',
+            passview:false,
+            actions3: [
+                {
+                    name: '确认',
+                    color: '#2d8cf0',
+                },
+                {
+                    name: '取消',
+                    color: '#19be6b',
+                },
+            ],
+            num:'',
+            flagg:'',
+        };
+
+        computed = {};
+
+        methods = {
+            //订单审核
+            orderExamintion(){
+                 wx.navigateTo({
+                     url: './order/eachOrder'
+                     // pages/order/eachOrder
+                 })
+            },
+            //账单审核
+            billExamintion(){
+                wx.navigateTo({
+                    url: './bill/examineBill'
+                })
+            },
+            //报销审核
+            accountExamintion(){
+                wx.navigateTo({
+                    url: './account/examineAccount'
+                })
+            },
+            //订单查询
+            orderSearching(){
+                wx.navigateTo({
+                    url: './order/searchOrder'
+                    // url: './order/eachOrderSe'
+                })
+            },
+            //账单查询
+            billSearching(){
+                wx.navigateTo({
+                    url: './bill/searchBill'
+                })
+            },
+            //报销查询
+            accountSearching(){
+                wx.navigateTo({
+                    url: './account/searchAccount'
+                })
+            },
+            //退出登录
+            exit(){
+                console.log(5555)
+                this.passview=true;
+                console.log(this.passview)
+            },
+            async handleClick3 (e) {
+                console.log(e._relatedInfo.anchorTargetText)
+                //退出登录成功
+                if(e._relatedInfo.anchorTargetText=='确认'){
+                    //清除缓存
+                    wepy.clearStorageSync(USER_INFO)
+                    wepy.clearStorageSync(USER_PASSWORD)
+                    wx.redirectTo({
+                        url: './login'
+                    })
+                    this.passview=false;
+                }else if(e._relatedInfo.anchorTargetText=='取消'){
+                    //退出登录取消
+                    this.passview=false;
+                }
+            },
+        };
+
+        events = {};
+
+        async onLoad() {
+            let px2rpx = await wepy.getStorageSync(PX_TO_RPX);
+            this.px2rpxWidth = px2rpx.px2rpxWidth;
+            this.px2rpxHeight = px2rpx.px2rpxHeight;
+            let userInfo = wepy.getStorageSync(USER_INFO);
+            this.num = userInfo.admin_account;
+            let flag = userInfo.admin_job_flag;
+            if(flag==1){
+                this.flagg = '终审';
+            }else if(flag==2){
+                this.flagg = '管理员';
+            }
+            console.log(userInfo)
+            this.$apply();
+            console.log(px2rpx);
+        }
+    }
+</script>
+<style lang="less">
+    .index {
+        background-color: #f1f1f1;
+        .ftop{
+            padding: 20rpx 10rpx 10rpx;
+            box-sizing: border-box;
+            image{
+                margin-right: 10rpx;
+            }
+            .ftopl{
+                width: 80%;
+            }
+            .ftopr{
+                box-sizing: border-box;
+                padding-right: 20rpx;
+                width: 20%;
+            }
+        }
+        .indextop {
+            border-radius: 5px;
+            background-color: #ffffff;
+            .index-title{
+                border-bottom: 1px solid #EFEFEF;
+                margin: 0 25rpx;
+            }
+            .index-title2{
+                margin: 0 25rpx;
+            }
+            .check{
+                font-weight: bold;
+                margin-left: 15rpx;
+            }
+            .con-left{
+                width: 50%;
+            }
+            .tabc{
+                margin: 20rpx 0;
+            }
+            .line-right{
+                border-right:1px solid #EFEFEF ;
+            }
+        }
+    }
+</style>
